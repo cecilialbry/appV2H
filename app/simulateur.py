@@ -496,7 +496,7 @@ interact(
     ),
     arrival_hour=IntSlider(min=0, max=23, step=1, value=8, description="Arrival"),
     departure_hour=IntSlider(min=0, max=23, step=1, value=19, description="Departure"),
-    initial_soc=FloatSlider(min=0.2, max=0.8, step=0.05, value=0.4, description="SoC init."),
+    initial_soc = st.slider("SoC initial", min_value=0.2, max_value=1.0, step=0.05, value=0.5)
     target_soc=FloatSlider(min=0.3, max=1.0, step=0.05, value=0.8, description="SoC target"),
     num_vehicles=IntSlider(min=1, max=10, step=1, value=1, description="Number of vehicles"),
     peak_power_kwp=FloatSlider(min=0.5, max=20.0, step=0.5, value=1.0, description="PV kWp"),
