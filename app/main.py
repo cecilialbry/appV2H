@@ -1,13 +1,18 @@
+
 import streamlit as st
-from simulateur_streamlit_ready import lancer_simulation
+from simulateur_streamlit_clean import run_simulation
 
-st.set_page_config(page_title="Simulateur V2H", layout="wide")
+st.set_page_config(page_title="V2H Simulator", layout="wide")
+st.title("Vehicle-to-Home (V2H) Energy Simulation")
 
-st.title("Simulateur V2H")
+st.sidebar.header("Vehicle Parameters")
+arrival_hour = st.sidebar.slider("Arrival Hour", 0, 23, 18)
+departure_hour = st.sidebar.slider("Departure Hour", 0, 23, 8)
 
-if st.button("Lancer la simulation"):
-    fig, df = lancer_simulation()
-    if fig is not None and df is not None:
-        st.plotly_chart(fig, use_container_width=True)
-        st.dataframe(df)
+st.sidebar.markdown("---")
+if st.sidebar.button("Run Simulation"):
+    try:
+        run_simulation(arrival_hour, departure_hour)
+    except Exception as e:
+        st.error(f"An error occurred during the simulation: {e}")
 
