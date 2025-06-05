@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
-st.set_page_config(page_title='Simulateur V2H', layout='wide')
+st.set_page_config(page_title='Simulator V2H', layout='wide')
 
 pv_data_by_country = {
     "Paris": {
@@ -381,17 +381,17 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 st.title("Simulateur V2H - Test")
 
 try:
-    country = st.selectbox("Ville", list(pv_data_by_country.keys()))
-    month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
-    profile_name = st.selectbox("Profil utilisateur", list(user_profiles.keys()))
+    country = st.selectbox("City", list(pv_data_by_country.keys()))
+    month = st.selectbox("Month", list(pv_data_by_country[country].keys()))
+    profile_name = st.selectbox("User profile", list(user_profiles.keys()))
     mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
-    vehicle_type = st.selectbox("Type de véhicule", list(vehicle_options.keys()))
-    arrival_hour = st.slider("Heure d'arrivée", 0, 23, 8)
-    departure_hour = st.slider("Heure de départ", 0, 23, 19)
-    initial_soc = st.slider("SoC initial", 0.2, 0.8, 0.4, 0.05)
-    target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
-    num_vehicles = st.slider("Nombre de véhicules", 1, 10, 1)
-    peak_power_kwp = st.slider("Puissance crête PV (kWp)", 0.5, 20.0, 1.0, 0.5)
+    vehicle_type = st.selectbox("Vehicle Type", list(vehicle_options.keys()))
+    arrival_hour = st.slider("Arrival time", 0, 23, 8)
+    departure_hour = st.slider("Departure time ", 0, 23, 19)
+    initial_soc = st.slider("Initial SOC", 0.2, 0.8, 0.4, 0.05)
+    target_soc = st.slider("Trget SOC", 0.3, 1.0, 0.8, 0.05)
+    num_vehicles = st.slider("Number of vehicle", 1, 10, 1)
+    peak_power_kwp = st.slider("Peak power (kWp)", 0.5, 20.0, 1.0, 0.5)
 
     fig, summary = run_simulation(
         country=country,
