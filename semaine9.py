@@ -1,23 +1,7 @@
 import streamlit as st
-st.set_page_config(page_title='Test App Streamlit')
-st.title('Bienvenue dans le simulateur V2H 🚗⚡')
-st.write('Cette version est maintenant en ligne et fonctionne ✅')
-soc = st.slider('Choisis ton SoC', 0.2, 1.0, 0.5, 0.05)
-st.write('SoC sélectionné :', soc)
-
-import streamlit as st
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[4]:
-
-
-from unittest import result
-
 import plotly.graph_objects as go
 import pandas as pd
 
-# === DONNÉES PV PAR VILLE ET MOIS ===
 pv_data_by_country = {
     "Paris": {
         "January":  [0,0,0,0,0,0,0,0.057,0.135,0.174,0.195,0.196,0.188,0.149,0.079,0.022,0,0,0,0,0,0,0,0],
@@ -47,7 +31,7 @@ pv_data_by_country = {
         "November": [0,0,0,0,0,0.010,0.163,0.227,0.254,0.307,0.327,0.342,0.329,0.258,0.071,0,0,0,0,0,0,0,0,0],
         "December": [0,0,0,0,0,0,0.123,0.235,0.258,0.275,0.301,0.302,0.300,0.245,0.0003,0,0,0,0,0,0,0,0,0]
     },
-
+        
 
     "Copenhagen": {
         "January":  [0,0,0,0,0,0,0,0,0.056,0.135,0.174,0.195,0.188,0.150,0.079,0.001,0,0,0,0,0,0,0,0],
@@ -62,7 +46,7 @@ pv_data_by_country = {
         "October":  [0,0,0,0,0,0,0,0.033,0.149,0.261,0.329,0.371,0.341,0.288,0.194,0.096,0.004,0,0,0,0,0,0,0],
         "November": [0,0,0,0,0,0,0,0,0.024,0.179,0.209,0.216,0.196,0.141,0.073,0,0,0,0,0,0,0,0,0],
         "December": [0,0,0,0,0,0,0,0,0.037,0.114,0.148,0.157,0.140,0.106,0.010,0,0,0,0,0,0,0,0,0]
-
+        
     },
     "Lisbon": {
         "January":  [0,0,0,0,0,0,0.098,0.303,0.514,0.690,0.819,0.889,0.902,0.814,0.678,0.478,0.260,0.054,0,0,0,0,0,0],
@@ -77,7 +61,7 @@ pv_data_by_country = {
         "October":  [0,0,0,0,0,0,0,0.147,0.237,0.332,0.414,0.551,0.499,0.429,0.305,0.021,0,0,0,0,0,0,0,0],
         "November": [0,0,0,0,0,0,0.010,0.163,0.227,0.254,0.307,0.342,0.329,0.258,0.071,0,0,0,0,0,0,0,0,0],
         "December": [0,0,0,0,0,0,0,0.123,0.235,0.258,0.275,0.301,0.300,0.245,0,0,0,0,0,0,0,0,0,0]
-
+        
     },
     "Athens": {
         "January":  [0,0,0,0,0,0,0.056,0.135,0.174,0.195,0.187,0.150,0.079,0.049,0.028,0,0,0,0,0,0,0,0,0],
@@ -92,7 +76,7 @@ pv_data_by_country = {
         "October":  [0,0,0,0,0,0,0,0.033,0.149,0.261,0.329,0.371,0.341,0.288,0.194,0.096,0.004,0,0,0,0,0,0,0],
         "November": [0,0,0,0,0,0,0,0,0.024,0.179,0.209,0.216,0.196,0.141,0.073,0,0,0,0,0,0,0,0,0],
         "December": [0,0,0,0,0,0,0,0,0.037,0.114,0.148,0.157,0.140,0.106,0.010,0,0,0,0,0,0,0,0,0]
-
+        
     }
 }
 
@@ -157,7 +141,7 @@ tariff_rates_by_city = {
         "off_peak": 0.13,
         "mid_peak": 0.19,
         "peak": 0.25
-
+ 
     }
 }
 vehicle_options = {
@@ -167,14 +151,12 @@ vehicle_options = {
     "Tesla Model 3 (75 kWh)": {"capacity_kWh": 75, "max_power_kW": 11},
     "BMW iX3 (80 kWh)": {"capacity_kWh": 80, "max_power_kW": 11}
 }
-
-
-# === Fonction de simulation ===
+# === Fonction de simulation simplifiée (colle ta vraie fonction ici) ===
 def run_simulation(country, month, profile_name, arrival_hour, departure_hour, initial_soc, target_soc, num_vehicles, mode, vehicle_type,peak_power_kwp):
     battery_capacity_kWh = 70
     max_kWh_per_hour = 11
     min_soc_ratio = 0.20
-
+     
 
 
 
@@ -237,17 +219,17 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour, i
         if energy_needed > remaining_possible_energy:
            return min(energy_needed, max_kWh_per_hour, battery_capacity_kWh - current_soc)
 
-
+    
 
         return 0
 
 
+        
+    
 
 
 
-
-
-
+     
 
 
 
@@ -292,7 +274,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour, i
         else:
           discharge_kWh = decide_discharge(h, mode, current_soc, demand, hours_left)
 
-
+        
 
         if discharge_kWh < 0:
             battery_effect = discharge_kWh
@@ -312,7 +294,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour, i
     soc_kWh[h] = current_soc
     soc_percent = [round(100 * s / battery_capacity_kWh, 2) if s is not None else None for s in soc_kWh]
     hours_str = [f"{h:02d}:00" for h in range(24)]
-
+    
     tariff_blocks = tariff_blocks_by_city[country]
    # Flexibilité disponible réelle sur la durée de connexion (par véhicule)
     soc_margin_per_vehicle = max(0, initial_soc - max(target_soc - (len(connected_hours) * max_kWh_per_hour / battery_capacity_kWh), min_soc_ratio))
@@ -322,13 +304,8 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour, i
     flexibility_per_vehicle_kWh = battery_capacity_kWh * min(1.0 - target_soc, target_soc - min_soc_ratio)
     flexibility_total_kWh = round(flexibility_per_vehicle_kWh * num_vehicles, 2)
 
-
-
-
-
-
-
     fig = go.Figure()
+    # Exemple d’ajout simple pour démonstration
     for hour in tariff_blocks["off_peak"]:
         fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightgreen", opacity=0.2, layer="below", line_width=0)
     for hour in tariff_blocks["mid_peak"]:
@@ -373,7 +350,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour, i
 ),
 
 yaxis2=dict(title='SoC (%)',overlaying='y',side='right',range=[0, 100],tick0=0,dtick=10, ),
-
+        
         height=650,
         legend=dict(orientation="h", yanchor="top", y=1.12, xanchor="center", x=0.5),
         margin=dict(t=80, b=60, l=60, r=60),
@@ -492,21 +469,28 @@ yaxis2=dict(title='SoC (%)',overlaying='y',side='right',range=[0, 100],tick0=0,d
     print(f" Energy discharged : {round(energy_discharged_kWh, 2)} kWh")
     print(f" Savings : {round(savings, 2)} €")
 
-    run_simulation,
-    country=st.selectbox(options=list(pv_data_by_country.keys()), value="Paris", description="City"),
-    month=st.selectbox(options=list(pv_data_by_country["Paris"].keys()), value="July", description="Month"),
-    profile_name=st.selectbox(options=list(user_profiles.keys()), value="Evening Users", description="House demand profile"),
-    mode=st.selectbox(options=["V2H", "V2G", "V2B"], value="V2H", description="Mode"),
-    vehicle_type=st.selectbox(
-        options=list(vehicle_options.keys()),
-        value="Peugeot e-208 (50 kWh)",
-        description="Vehicle"
-    ),
-    arrival_hour=st.slider(min=0, max=23, step=1, value=8, description="Arrival"),
-    departure_hour=st.slider(min=0, max=23, step=1, value=19, description="Departure"),
-    initial_soc=st.slider(min=0.2, max=0.8, step=0.05, value=0.4, description="SoC init."),
-    target_soc=st.slider(min=0.3, max=1.0, step=0.05, value=0.8, description="SoC target"),
-    num_vehicles=st.slider(min=1, max=10, step=1, value=1, description="Number of vehicles"),
-    peak_power_kwp=st.slider(min=0.5, max=20.0, step=0.5, value=1.0, description="PV kWp"),
+# === Interface utilisateur Streamlit ===
 
+st.title("Simulateur V2H")
+
+country = st.selectbox("Ville", list(pv_data_by_country.keys()))
+month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
+profile_name = st.selectbox("Profil de consommation", list(user_profiles.keys()))
+mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
+vehicle_type = st.selectbox("Véhicule", list(vehicle_options.keys()))
+
+arrival_hour = st.slider("Heure d'arrivée", 0, 23, 8)
+departure_hour = st.slider("Heure de départ", 0, 23, 19)
+initial_soc = st.slider("SoC initial", 0.2, 0.8, 0.4, 0.05)
+target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
+num_vehicles = st.slider("Nombre de véhicules", 1, 10, 1)
+peak_power_kwp = st.slider("Puissance PV (kWp)", 0.5, 20.0, 1.0, 0.5)
+
+if st.button("Lancer la simulation"):
+    fig, summary = run_simulation(
+        country, month, profile_name, arrival_hour, departure_hour,
+        initial_soc, target_soc, num_vehicles, mode, vehicle_type, peak_power_kwp
+    )
+    st.plotly_chart(fig)
+    st.markdown(summary)
 
