@@ -17,5 +17,13 @@ L’utilisateur peut choisir :
 - et visualiser les résultats sous forme de graphiques et tableaux.
 
 ## 🗂️ Organisation du projet
+appV2H/
+├── app/ # Fichiers Streamlit (.py)
+├── data/ # Données : profils utilisateurs, PV, tarifs
+├── assets/ # Images, logos pour l’interface
+├── .streamlit/ # Fichiers de configuration Streamlit (layout, thème)
+├── requirements.txt # Librairies Python nécessaires
+├── CHANGELOG.md # Suivi des versions de l'app
+└── README.md
 
 
