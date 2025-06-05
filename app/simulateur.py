@@ -170,10 +170,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour, i
 
     house_demand_profile = user_profiles[profile_name]
     pv_raw = pv_data_by_country[country][month]  # irradiance horaire en kWh/m²
-    print("DEBUG | country =", country)
-    print("DEBUG | month =", month)
-    print("DEBUG | pv_data_by_country keys =", list(pv_data_by_country.keys()))
-    print("DEBUG | pv_data_by_country[country] keys =", list(pv_data_by_country[country].keys()))
+    
 
     rendement = 0.205
     surface_par_kwp = 4.875  # en m² pour 1 kWp
