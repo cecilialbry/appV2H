@@ -1,6 +1,7 @@
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
+st.set_page_config(page_title='Simulateur V2H', layout='wide')
 
 pv_data_by_country = {
     "Paris": {
@@ -357,7 +358,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
         
     
-     
+    st.plotly_chart(fig, use_container_width=False)
     summary_text = f"""
     ### Résultats Simulation
 
