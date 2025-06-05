@@ -1,13 +1,19 @@
 import streamlit as st
-from simulateur import lancer_simulation
+from app.simulateur import lancer_simulation
 
+st.set_page_config(page_title="Simulateur V2H", layout="wide")
 
-st.set_page_config(page_title="V2H Simulator", layout="wide")
-st.title("🔋 V2H Energy Simulator")
+st.title("🔋 Simulateur énergétique V2H (Vehicle-to-Home)")
+st.markdown("""
+Bienvenue dans l'application de simulation énergétique V2H.  
+Cette interface vous permet de visualiser les échanges d’énergie entre :
+- un véhicule électrique (VE),
+- une maison (demande énergétique),
+- une production photovoltaïque (PV),
+- et le réseau.
+""")
 
-st.markdown("Click below to run the simulation:")
-
-if st.button("Run simulation"):
-    df, fig = lancer_simulation()
+if st.button("Lancer la simulation"):
+    fig, df = lancer_simulation()
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df)
