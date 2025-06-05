@@ -494,7 +494,7 @@ def lancer_simulation():
         "target_soc": 0.6,
         "num_vehicles": 1,
         "mode": "V2H",
-        "vehicle_type": "voiture",
+        "vehicle_type": "Renault Zoe (40 kWh)",
         "peak_power_kwp": 6
     }
 
