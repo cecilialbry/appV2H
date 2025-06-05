@@ -1,3 +1,4 @@
+import streamlit as st
 #!/usr/bin/env python
 # coding: utf-8
 
@@ -5,7 +6,6 @@
 
 
 from unittest import result
-from ipywidgets import Dropdown, interact, IntSlider, FloatSlider 
 from IPython.display import display, clear_output
 
 import plotly.graph_objects as go
@@ -486,24 +486,23 @@ yaxis2=dict(title='SoC (%)',overlaying='y',side='right',range=[0, 100],tick0=0,d
     print(f" Energy discharged : {round(energy_discharged_kWh, 2)} kWh")
     print(f" Savings : {round(savings, 2)} €")
 
-# === Interface interactive ===
-interact(
     run_simulation,
-    country=Dropdown(options=list(pv_data_by_country.keys()), value="Paris", description="City"),
-    month=Dropdown(options=list(pv_data_by_country["Paris"].keys()), value="July", description="Month"),
-    profile_name=Dropdown(options=list(user_profiles.keys()), value="Evening Users", description="House demand profile"),
-    mode=Dropdown(options=["V2H", "V2G", "V2B"], value="V2H", description="Mode"),
-    vehicle_type=Dropdown(
+    country=st.selectbox(options=list(pv_data_by_country.keys()), value="Paris", description="City"),
+    month=st.selectbox(options=list(pv_data_by_country["Paris"].keys()), value="July", description="Month"),
+    profile_name=st.selectbox(options=list(user_profiles.keys()), value="Evening Users", description="House demand profile"),
+    mode=st.selectbox(options=["V2H", "V2G", "V2B"], value="V2H", description="Mode"),
+    vehicle_type=st.selectbox(
         options=list(vehicle_options.keys()),
         value="Peugeot e-208 (50 kWh)",
         description="Vehicle"
     ),
-    arrival_hour=IntSlider(min=0, max=23, step=1, value=8, description="Arrival"),
-    departure_hour=IntSlider(min=0, max=23, step=1, value=19, description="Departure"),
-    initial_soc=FloatSlider(min=0.2, max=0.8, step=0.05, value=0.4, description="SoC init."),
-    target_soc=FloatSlider(min=0.3, max=1.0, step=0.05, value=0.8, description="SoC target"),
-    num_vehicles=IntSlider(min=1, max=10, step=1, value=1, description="Number of vehicles"),
-    peak_power_kwp=FloatSlider(min=0.5, max=20.0, step=0.5, value=1.0, description="PV kWp"),
+    arrival_hour=st.slider(min=0, max=23, step=1, value=8, description="Arrival"),
+    departure_hour=st.slider(min=0, max=23, step=1, value=19, description="Departure"),
+    initial_soc=st.slider(min=0.2, max=0.8, step=0.05, value=0.4, description="SoC init."),
+    target_soc=st.slider(min=0.3, max=1.0, step=0.05, value=0.8, description="SoC target"),
+    num_vehicles=st.slider(min=1, max=10, step=1, value=1, description="Number of vehicles"),
+    peak_power_kwp=st.slider(min=0.5, max=20.0, step=0.5, value=1.0, description="PV kWp"),
 
 )
+
 
