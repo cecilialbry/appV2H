@@ -241,12 +241,11 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
         demand = house_demand_profile[h]
         pv = pv_profile[h]
-        effective_demand = max(demand - pv, 0)
         energy_needed = target_soc_kWh - current_soc
         remaining_hours = connected_hours[connected_hours.index(h)+1:]
         hours_left = len(remaining_hours)
         if pv >= demand:
-            discharge_kWh = 0  # pas de décharge, maison couverte par PV
+            discharge_kWh = 0
         else:
             discharge_kWh = decide_discharge(h, mode, current_soc, demand, hours_left)
 
@@ -269,13 +268,65 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     soc_percent = [round(100 * s / battery_capacity_kWh, 2) if s is not None else None for s in soc_kWh]
     hours_str = [f"{h:02d}:00" for h in range(24)]
 
+    summary_df = pd.DataFrame({
+        "hour": list(range(24)),
+        "house_demand": house_demand_profile,
+        "pv_generation": pv_profile,
+        "battery_flow": battery_flow
+    })
+
+    # KPI Calculations
+    ev_support = summary_df.apply(
+        lambda row: min(max(row["house_demand"] - row["pv_generation"], 0), -row["battery_flow"]) if row["battery_flow"] < 0 else 0,
+        axis=1
+    )
+    total_ev = ev_support.sum()
+    ev_pct = round(100 * total_ev / summary_df["house_demand"].sum(), 2)
+
+    pv_support = summary_df.apply(
+        lambda row: min(row["house_demand"], row["pv_generation"]) if row["hour"] in connected_hours else 0,
+        axis=1
+    )
+    total_pv = pv_support.sum()
+    pv_pct = round(100 * total_pv / summary_df["house_demand"].sum(), 2)
+
+    covered_total = summary_df.apply(
+        lambda row: min(row["house_demand"], row["pv_generation"] + max(-row["battery_flow"], 0)),
+        axis=1
+    )
+    self_suff_pct = round(100 * covered_total.sum() / summary_df["house_demand"].sum(), 2)
+
+    energy_charged_kWh = summary_df[summary_df["battery_flow"] > 0]["battery_flow"].sum()
+    ev_charge_pv = summary_df.apply(
+        lambda row: min(row["pv_generation"], row["battery_flow"]) if row["battery_flow"] > 0 else 0,
+        axis=1
+    ).sum()
+    ev_charge_grid = energy_charged_kWh - ev_charge_pv
+    ev_charge_pv = round(ev_charge_pv, 2)
+    ev_charge_grid = round(ev_charge_grid, 2)
+
+    energy_discharged_kWh = summary_df[summary_df["battery_flow"] < 0]["battery_flow"].abs().sum()
+
+    baseline_kWh_from_grid = [max(house_demand_profile[h] - pv_profile[h], 0) for h in connected_hours]
+    actual_kWh_from_grid = [max(house_demand_profile[h] - pv_profile[h] - battery_flow[h], 0) for h in connected_hours]
+
+    tariff_rates = tariff_rates_by_city[country]
     tariff_blocks = tariff_blocks_by_city[country]
 
-    # Résumé calculs (exemple simplifié)
-    total_pv = sum(pv_profile[h] for h in connected_hours)
-    total_ev_discharge = sum(-bf for bf in battery_flow if bf < 0)
-    total_demand = sum(house_demand_profile)
+    tariff_per_hour = []
+    for h in connected_hours:
+        if h in tariff_blocks["peak"]:
+            tariff_per_hour.append(tariff_rates["peak"])
+        elif h in tariff_blocks["mid_peak"]:
+            tariff_per_hour.append(tariff_rates["mid_peak"])
+        else:
+            tariff_per_hour.append(tariff_rates["off_peak"])
 
+    baseline_cost = sum([kwh * price for kwh, price in zip(baseline_kWh_from_grid, tariff_per_hour)])
+    actual_cost = sum([kwh * price for kwh, price in zip(actual_kWh_from_grid, tariff_per_hour)])
+    savings = round(baseline_cost - actual_cost, 2)
+
+    # Création du graphique Plotly
     fig = go.Figure()
     for hour in tariff_blocks["off_peak"]:
         fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightgreen", opacity=0.2, layer="below", line_width=0)
@@ -306,21 +357,23 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
         template="plotly_white"
     )
 
+    # Texte résumé complet
     summary_text = f"""
-### Résultats Simulation
+    ### Résultats Simulation
 
-- Total PV production during connection: {round(total_pv_connected, 2)} kWh
-- Flexibility from EV: {round(total_ev, 2)} kWh ({ev_pct} % of total demand)
-- Flexibility from PV: {round(total_pv, 2)} kWh ({pv_pct} % of total demand)
-- Autonomy energetic (self-sufficiency): {self_suff_pct} %
-- Energy charged: {round(energy_charged_kWh, 2)} kWh
-  - from PV: {ev_charge_pv} kWh
-  - from Grid: {ev_charge_grid} kWh
-- Energy discharged: {round(energy_discharged_kWh, 2)} kWh
-- Savings: {round(savings, 2)} €
-"""
+    - Total PV production during connection: {round(total_pv_connected, 2)} kWh
+    - Flexibility from EV: {round(total_ev, 2)} kWh ({ev_pct} % of total demand)
+    - Flexibility from PV: {round(total_pv, 2)} kWh ({pv_pct} % of total demand)
+    - Autonomy energetic (self-sufficiency): {self_suff_pct} %
+    - Energy charged: {round(energy_charged_kWh, 2)} kWh
+      - from PV: {ev_charge_pv} kWh
+      - from Grid: {ev_charge_grid} kWh
+    - Energy discharged: {round(energy_discharged_kWh, 2)} kWh
+    - Savings: {round(savings, 2)} €
+    """
 
     return fig, summary_text
+
 
 
 
