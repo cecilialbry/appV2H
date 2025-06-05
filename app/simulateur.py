@@ -480,28 +480,6 @@ yaxis2=dict(title='SoC (%)',overlaying='y',side='right',range=[0, 100],tick0=0,d
     print(f"    ↳ from PV : {ev_charge_pv} kWh")
     print(f"    ↳ from Grid : {ev_charge_grid} kWh") 
     print(f" Energy discharged : {round(energy_discharged_kWh, 2)} kWh")
-    print(f" Savings : {round(savings, 2)} €")
-
-# === Interface interactive ===
-interact(
-    run_simulation,
-    country=Dropdown(options=list(pv_data_by_country.keys()), value="Paris", description="City"),
-    month=Dropdown(options=list(pv_data_by_country["Paris"].keys()), value="July", description="Month"),
-    profile_name=Dropdown(options=list(user_profiles.keys()), value="Evening Users", description="House demand profile"),
-    mode=Dropdown(options=["V2H", "V2G", "V2B"], value="V2H", description="Mode"),
-    vehicle_type=Dropdown(
-        options=list(vehicle_options.keys()),
-        value="Peugeot e-208 (50 kWh)",
-        description="Vehicle"
-    ),
-    arrival_hour=IntSlider(min=0, max=23, step=1, value=8, description="Arrival"),
-    departure_hour=IntSlider(min=0, max=23, step=1, value=19, description="Departure"),
-    initial_soc=FloatSlider(min=0.2, max=0.8, step=0.05, value=0.4, description="SoC init."),
-    target_soc=FloatSlider(min=0.3, max=1.0, step=0.05, value=0.8, description="SoC target"),
-    num_vehicles=IntSlider(min=1, max=10, step=1, value=1, description="Number of vehicles"),
-    peak_power_kwp=FloatSlider(min=0.5, max=20.0, step=0.5, value=1.0, description="PV kWp"),
-
-)
 
 
 
