@@ -152,36 +152,6 @@ vehicle_options = {
     "BMW iX3 (80 kWh)": {"capacity_kWh": 80, "max_power_kW": 11}
 }
 # === Fonction de simulation simplifiée (colle ta vraie fonction ici) ===
-def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
-    initial_soc, target_soc, num_vehicles, mode, vehicle_type, peak_power_kwp):
-    battery_capacity_kWh = 70
-    max_kWh_per_hour = 11
-    min_soc_ratio = 0.20
-
-    house_demand_profile = user_profiles[profile_name]
-    pv_raw = pv_data_by_country[country][month]  # irradiance horaire en kWh/m²
-    rendement = 0.205
-    surface_par_kwp = 4.875  # en m² pour 1 kWp
-    surface_totale = surface_par_kwp * peak_power_kwp  # en m²
-    pv_profile = [irr * surface_totale * rendement for irr in pv_raw]  # production horaire en kWh
-    tariff_blocks = tariff_blocks_by_city[country]
-    vehicle = vehicle_options[vehicle_type]
-    battery_capacity_kWh = vehicle["capacity_kWh"]
-    max_kWh_per_hour = vehicle["max_power_kW"]
-
-    initial_soc_kWh = initial_soc * battery_capacity_kWh
-    target_soc_kWh = target_soc * battery_capacity_kWh
-    current_soc = initial_soc_kWh
-
-    soc_kWh = [None] * 24
-    battery_flow = [0] * 24
-    net_load = [0] * 24
-
-    if arrival_hour <= departure_hour:
-        connected_hours = list(range(arrival_hour, departure_hour))
-    else:
-        connected_hours = list(range(arrival_hour, 24)) + list(range(0, departure_hour))
-    total_pv_connected = sum(pv_profile[h] for h in connected_hours)
 
     def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
                    initial_soc, target_soc, num_vehicles, mode, vehicle_type, peak_power_kwp):
