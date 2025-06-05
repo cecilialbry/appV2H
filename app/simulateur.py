@@ -487,7 +487,7 @@ def lancer_simulation():
     config = {
         "country": "France",
         "month": "January",
-        "profile_name": "standard",
+        "profile_name": "Evening Users",
         "arrival_hour": 17,
         "departure_hour": 8,
         "initial_soc": 0.3,
