@@ -1,4 +1,11 @@
 import streamlit as st
+st.set_page_config(page_title='Test App Streamlit')
+st.title('Bienvenue dans le simulateur V2H 🚗⚡')
+st.write('Cette version est maintenant en ligne et fonctionne ✅')
+soc = st.slider('Choisis ton SoC', 0.2, 1.0, 0.5, 0.05)
+st.write('SoC sélectionné :', soc)
+
+import streamlit as st
 #!/usr/bin/env python
 # coding: utf-8
 
@@ -6,7 +13,6 @@ import streamlit as st
 
 
 from unittest import result
-
 
 import plotly.graph_objects as go
 import pandas as pd
@@ -503,6 +509,5 @@ yaxis2=dict(title='SoC (%)',overlaying='y',side='right',range=[0, 100],tick0=0,d
     num_vehicles=st.slider(min=1, max=10, step=1, value=1, description="Number of vehicles"),
     peak_power_kwp=st.slider(min=0.5, max=20.0, step=0.5, value=1.0, description="PV kWp"),
 
-
-
+)
 
