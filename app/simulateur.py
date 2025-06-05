@@ -502,5 +502,25 @@ interact(
     peak_power_kwp=FloatSlider(min=0.5, max=20.0, step=0.5, value=1.0, description="PV kWp"),
 
 )
+def lancer_simulation():
+    config = {
+        "country": "Paris",  # ou Ljubljana, etc.
+        "month": "January",
+        "profile_name": "standard",
+        "initial_soc": 0.3,
+        "target_soc": 0.6,
+        "num_vehicles": 1,
+        "mode": "V2H",
+        "vehicle_type": "Renault Zoe (40 kWh)",
+        "peak_power_kwp": 6
+    }
+
+    try:
+        fig, df = run_simulation(**config)
+        return fig, df
+    except Exception as e:
+        import streamlit as st
+        st.error(f"Erreur pendant la simulation : {e}")
+        return None, None
 
 
