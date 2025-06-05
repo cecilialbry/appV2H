@@ -485,7 +485,7 @@ yaxis2=dict(title='SoC (%)',overlaying='y',side='right',range=[0, 100],tick0=0,d
 
 def lancer_simulation():
     config = {
-        "country": "France",
+        "country": "Paris",
         "month": "January",
         "profile_name": "Evening Users",
         "arrival_hour": 17,
