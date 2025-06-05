@@ -1,5 +1,5 @@
 import streamlit as st
-from simulateur import lancer_simulation
+from simulateur_streamlit_ready import lancer_simulation
 
 st.set_page_config(page_title="Simulateur V2H", layout="wide")
 
