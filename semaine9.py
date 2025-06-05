@@ -6,7 +6,7 @@ import streamlit as st
 
 
 from unittest import result
-from IPython.display import display, clear_output
+
 
 import plotly.graph_objects as go
 import pandas as pd
