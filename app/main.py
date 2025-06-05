@@ -33,6 +33,9 @@ mode = st.sidebar.selectbox("Simulation mode:", ["V2H", "V2B", "V2G"])
 
 peak_power_kwp = st.sidebar.slider("PV peak power (kWp):", 1, 20, 5)
 
+country = st.sidebar.selectbox("Select country:", ["France", "Slovenia", "Denmark", "Greece", "Portugal"])
+month = st.sidebar.selectbox("Select month:", list(range(1, 13)))
+
 # Launch simulation
 if st.button("Run Simulation"):
     try:
@@ -45,7 +48,10 @@ if st.button("Run Simulation"):
             num_vehicles=num_vehicles,
             mode=mode,
             vehicle_type=vehicle_type,
-            peak_power_kwp=peak_power_kwp
+            peak_power_kwp=peak_power_kwp,
+            country=country,
+            month=month
         )
     except Exception as e:
         st.error(f"An error occurred during the simulation: {e}")
+
