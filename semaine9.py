@@ -358,7 +358,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
         
     
-    st.plotly_chart(fig, use_container_width=False)
+    
     summary_text = f"""
     ### Résultats Simulation
 
