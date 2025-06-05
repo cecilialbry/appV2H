@@ -151,8 +151,8 @@ vehicle_options = {
     "Tesla Model 3 (75 kWh)": {"capacity_kWh": 75, "max_power_kW": 11},
     "BMW iX3 (80 kWh)": {"capacity_kWh": 80, "max_power_kW": 11}
 }
-# === Fonction de simulation simplifiée (colle ta vraie fonction ici) ===
 
+# === Fonction run_simulation corrigée ===
 def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
                    initial_soc, target_soc, num_vehicles, mode, vehicle_type, peak_power_kwp):
     battery_capacity_kWh = 70
@@ -160,11 +160,11 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     min_soc_ratio = 0.20
 
     house_demand_profile = user_profiles[profile_name]
-    pv_raw = pv_data_by_country[country][month]  # irradiance horaire en kWh/m²
+    pv_raw = pv_data_by_country[country][month]
     rendement = 0.205
-    surface_par_kwp = 4.875  # en m² pour 1 kWp
-    surface_totale = surface_par_kwp * peak_power_kwp  # en m²
-    pv_profile = [irr * surface_totale * rendement for irr in pv_raw]  # production horaire en kWh
+    surface_par_kwp = 4.875
+    surface_totale = surface_par_kwp * peak_power_kwp
+    pv_profile = [irr * surface_totale * rendement for irr in pv_raw]
 
     tariff_blocks = tariff_blocks_by_city[country]
     tariff_rates = tariff_rates_by_city[country]
@@ -244,7 +244,6 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
         demand = house_demand_profile[h]
         pv = pv_profile[h]
-        energy_needed = target_soc_kWh - current_soc
         remaining_hours = connected_hours[connected_hours.index(h)+1:]
         hours_left = len(remaining_hours)
         if pv >= demand:
@@ -312,95 +311,6 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     baseline_kWh_from_grid = [max(house_demand_profile[h] - pv_profile[h], 0) for h in connected_hours]
     actual_kWh_from_grid = [max(house_demand_profile[h] - pv_profile[h] - battery_flow[h], 0) for h in connected_hours]
 
-    baseline_cost = sum([kwh * price for kwh, price in zip(baseline_kWh_from_grid, [tariff_rates["peak"] if h in tariff_blocks["peak"] else tariff_rates["mid_peak"] if h in tariff_blocks["mid_peak"] else tariff_rates["off_peak"] for h in connected_hours])])
-    actual_cost = sum([kwh * price for kwh, price in zip(actual_kWh_from_grid, [tariff_rates["peak"] if h in tariff_blocks["peak"] else tariff_rates["mid_peak"] if h in tariff_blocks["mid_peak"] else tariff_rates["off_peak"] for h in connected_hours])])
-    savings = round(baseline_cost - actual_cost, 2)
-
-    fig = go.Figure()
-    for hour in tariff_blocks["off_peak"]:
-        fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightgreen", opacity=0.2, layer="below", line_width=0)
-    for hour in tariff_blocks["mid_peak"]:
-        fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightgray", opacity=0.2, layer="below", line_width=0)
-    for hour in tariff_blocks["peak"]:
-        fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightcoral", opacity=0.2, layer="below", line_width=0)
-
-    fig.add_trace(go.Scatter(x=hours_str, y=house_demand_profile, mode='lines+markers', name='House Demand (kW)', line=dict(color='gray')))
-    fig.add_trace(go.Scatter(x=hours_str, y=pv_profile, mode='lines+markers', name='PV (kW)', line=dict(color='orange')))
-    fig.add_trace(go.Scatter(x=hours_str, y=battery_flow, mode='lines+markers', name='Battery Flow (kWh)', line=dict(color='green', dash='dot')))
-    fig.add_trace(go.Scatter(x=hours_str, y=soc_percent, mode='lines+markers', name='SoC (%)', line=dict(color='blue', dash='dash'), yaxis='y2'))
-    fig.add_trace(go.Scatter(x=hours_str, y=net_load, mode='lines+markers', name='Net Load (kW)', line=dict(color='black')))
-    fig.add_trace(go.Scatter(x=[hours_str[arrival_hour]], y=[soc_percent[arrival_hour]], mode='markers', name='Arrival', marker=dict(color='green', size=12), yaxis='y2'))
-    if soc_percent[departure_hour] is not None:
-        fig.add_trace(go.Scatter(x=[hours_str[departure_hour]], y=[soc_percent[departure_hour]], mode='markers', name='Departure', marker=dict(color='red', size=12), yaxis='y2'))
-
-    max_y = max(max(pv_profile), max(house_demand_profile), max(net_load), max(abs(x) for x in battery_flow)) * 1.2
-    max_y = min(max_y, 60)
-
-    fig.update_layout(
-        xaxis=dict(title='Heure'),
-        yaxis=dict(title='Puissance (kW)', side='left', range=[0, max_y], tick0=0, dtick=5),
-        yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100], tick0=0, dtick=10),
-        height=650,
-        legend=dict(orientation="h", yanchor="top", y=1.12, xanchor="center", x=0.5),
-        margin=dict(t=80, b=60, l=60, r=60),
-        template="plotly_white"
-    )
-
-    summary_text = f"""
-    ### Résultats Simulation
-
-    - Total PV production during connection: {round(total_pv_connected, 2)} kWh
-    - Flexibility from EV: {round(total_ev, 2)} kWh ({ev_pct} % of total demand)
-    - Flexibility from PV: {round(total_pv, 2)} kWh ({pv_pct} % of total demand)
-    - Autonomy energetic (self-sufficiency): {self_suff_pct} %
-    - Energy charged: {round(energy_charged_kWh, 2)} kWh
-      - from PV: {ev_charge_pv} kWh
-      - from Grid: {ev_charge_grid} kWh
-    - Energy discharged: {round(energy_discharged_kWh, 2)} kWh
-    - Savings: {round(savings, 2)} €
-    """
-
-    return fig, summary_text
-
-
-    # KPI Calculations
-    ev_support = summary_df.apply(
-        lambda row: min(max(row["house_demand"] - row["pv_generation"], 0), -row["battery_flow"]) if row["battery_flow"] < 0 else 0,
-        axis=1
-    )
-    total_ev = ev_support.sum()
-    ev_pct = round(100 * total_ev / summary_df["house_demand"].sum(), 2)
-
-    pv_support = summary_df.apply(
-        lambda row: min(row["house_demand"], row["pv_generation"]) if row["hour"] in connected_hours else 0,
-        axis=1
-    )
-    total_pv = pv_support.sum()
-    pv_pct = round(100 * total_pv / summary_df["house_demand"].sum(), 2)
-
-    covered_total = summary_df.apply(
-        lambda row: min(row["house_demand"], row["pv_generation"] + max(-row["battery_flow"], 0)),
-        axis=1
-    )
-    self_suff_pct = round(100 * covered_total.sum() / summary_df["house_demand"].sum(), 2)
-
-    energy_charged_kWh = summary_df[summary_df["battery_flow"] > 0]["battery_flow"].sum()
-    ev_charge_pv = summary_df.apply(
-        lambda row: min(row["pv_generation"], row["battery_flow"]) if row["battery_flow"] > 0 else 0,
-        axis=1
-    ).sum()
-    ev_charge_grid = energy_charged_kWh - ev_charge_pv
-    ev_charge_pv = round(ev_charge_pv, 2)
-    ev_charge_grid = round(ev_charge_grid, 2)
-
-    energy_discharged_kWh = summary_df[summary_df["battery_flow"] < 0]["battery_flow"].abs().sum()
-
-    baseline_kWh_from_grid = [max(house_demand_profile[h] - pv_profile[h], 0) for h in connected_hours]
-    actual_kWh_from_grid = [max(house_demand_profile[h] - pv_profile[h] - battery_flow[h], 0) for h in connected_hours]
-
-    tariff_rates = tariff_rates_by_city[country]
-    tariff_blocks = tariff_blocks_by_city[country]
-
     tariff_per_hour = []
     for h in connected_hours:
         if h in tariff_blocks["peak"]:
@@ -414,14 +324,13 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     actual_cost = sum([kwh * price for kwh, price in zip(actual_kWh_from_grid, tariff_per_hour)])
     savings = round(baseline_cost - actual_cost, 2)
 
-    # Création du graphique Plotly
     fig = go.Figure()
     for hour in tariff_blocks["off_peak"]:
-        fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightgreen", opacity=0.2, layer="below", line_width=0)
+        fig.add_vrect(x0=hour, x1=hour + 1, fillcolor="lightgreen", opacity=0.2, layer="below", line_width=0)
     for hour in tariff_blocks["mid_peak"]:
-        fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightgray", opacity=0.2, layer="below", line_width=0)
+        fig.add_vrect(x0=hour, x1=hour + 1, fillcolor="lightgray", opacity=0.2, layer="below", line_width=0)
     for hour in tariff_blocks["peak"]:
-        fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightcoral", opacity=0.2, layer="below", line_width=0)
+        fig.add_vrect(x0=hour, x1=hour + 1, fillcolor="lightcoral", opacity=0.2, layer="below", line_width=0)
 
     fig.add_trace(go.Scatter(x=hours_str, y=house_demand_profile, mode='lines+markers', name='House Demand (kW)', line=dict(color='gray')))
     fig.add_trace(go.Scatter(x=hours_str, y=pv_profile, mode='lines+markers', name='PV (kW)', line=dict(color='orange')))
@@ -445,7 +354,6 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
         template="plotly_white"
     )
 
-    # Texte résumé complet
     summary_text = f"""
     ### Résultats Simulation
 
@@ -463,273 +371,39 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     return fig, summary_text
 
 
+# === Interface Streamlit ===
 
+st.title("Simulateur V2H - Test")
 
-        
-    
+try:
+    country = st.selectbox("Ville", list(pv_data_by_country.keys()))
+    month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
+    profile_name = st.selectbox("Profil utilisateur", list(user_profiles.keys()))
+    mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
+    vehicle_type = st.selectbox("Type de véhicule", list(vehicle_options.keys()))
+    arrival_hour = st.slider("Heure d'arrivée", 0, 23, 8)
+    departure_hour = st.slider("Heure de départ", 0, 23, 19)
+    initial_soc = st.slider("SoC initial", 0.2, 0.8, 0.4, 0.05)
+    target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
+    num_vehicles = st.slider("Nombre de véhicules", 1, 10, 1)
+    peak_power_kwp = st.slider("Puissance crête PV (kWp)", 0.5, 20.0, 1.0, 0.5)
 
-
-
-     
-
-
-
-    def decide_discharge(h, mode, current_soc, house_demand, hours_left):
-        max_possible_recharge = (hours_left - 1) * max_kWh_per_hour
-        soc_floor = max(target_soc_kWh - max_possible_recharge, min_soc_ratio * battery_capacity_kWh)
-        discharge_margin = current_soc - soc_floor
-
-        if discharge_margin <= 0.01:
-            return 0
-
-        if mode == "V2H":
-            if house_demand <= 1:
-                return 0
-            return -min(house_demand, discharge_margin, max_kWh_per_hour)
-
-        elif mode == "V2G":
-            return -min(discharge_margin, max_kWh_per_hour)
-
-        elif mode == "V2B":
-            if house_demand <= 1:
-                return 0
-            building_demand = house_demand * 3
-            return -min(building_demand, discharge_margin, max_kWh_per_hour)
-
-        return 0
-
-    soc_kWh[arrival_hour] = current_soc
-
-    for h in connected_hours:
-        if h == arrival_hour:
-            continue
-
-        demand = house_demand_profile[h]
-        pv = pv_profile[h]
-        effective_demand = max(demand - pv, 0)
-        energy_needed = target_soc_kWh - current_soc
-        remaining_hours = connected_hours[connected_hours.index(h)+1:]
-        hours_left = len(remaining_hours)
-        if pv >= demand:
-          discharge_kWh = 0  # pas de décharge, la maison est déjà couverte par le PV
-        else:
-          discharge_kWh = decide_discharge(h, mode, current_soc, demand, hours_left)
-
-        
-
-        if discharge_kWh < 0:
-            battery_effect = discharge_kWh
-        else:
-            recharge_kWh = decide_recharge(h, current_soc, demand, pv, mode)
-
-            battery_effect = recharge_kWh
-
-        battery_effect_total = battery_effect * num_vehicles
-        current_soc += battery_effect
-        current_soc = max(min(current_soc, battery_capacity_kWh), min_soc_ratio * battery_capacity_kWh)
-        soc_kWh[h] = current_soc
-        battery_flow[h] = round(battery_effect_total, 2)
-        net_load[h] = round(max(demand - pv + battery_effect_total, 0), 2)
-    if soc_kWh[departure_hour] is None:
-       soc_kWh[departure_hour] = current_soc
-    soc_kWh[h] = current_soc
-    soc_percent = [round(100 * s / battery_capacity_kWh, 2) if s is not None else None for s in soc_kWh]
-    hours_str = [f"{h:02d}:00" for h in range(24)]
-    
-    tariff_blocks = tariff_blocks_by_city[country]
-   # Flexibilité disponible réelle sur la durée de connexion (par véhicule)
-    soc_margin_per_vehicle = max(0, initial_soc - max(target_soc - (len(connected_hours) * max_kWh_per_hour / battery_capacity_kWh), min_soc_ratio))
-    flexibility_available = round(soc_margin_per_vehicle * battery_capacity_kWh * num_vehicles, 2)
-
-# Flexibilité théorique maximale (plage entre min_soc et SoC cible)
-    flexibility_per_vehicle_kWh = battery_capacity_kWh * min(1.0 - target_soc, target_soc - min_soc_ratio)
-    flexibility_total_kWh = round(flexibility_per_vehicle_kWh * num_vehicles, 2)
-
-    fig = go.Figure()
-    # Exemple d’ajout simple pour démonstration
-    for hour in tariff_blocks["off_peak"]:
-        fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightgreen", opacity=0.2, layer="below", line_width=0)
-    for hour in tariff_blocks["mid_peak"]:
-        fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightgray", opacity=0.2, layer="below", line_width=0)
-    for hour in tariff_blocks["peak"]:
-        fig.add_vrect(x0=hour, x1=hour+1, fillcolor="lightcoral", opacity=0.2, layer="below", line_width=0)
-
-    fig.add_trace(go.Scatter(x=hours_str, y=house_demand_profile, mode='lines+markers', name='House Demand (kW)', line=dict(color='gray')))
-    fig.add_trace(go.Scatter(x=hours_str, y=pv_profile, mode='lines+markers', name='PV (kW)', line=dict(color='orange')))
-    fig.add_trace(go.Scatter(x=hours_str, y=battery_flow, mode='lines+markers', name='Battery Flow (kWh)', line=dict(color='green', dash='dot')))
-    fig.add_trace(go.Scatter(x=hours_str, y=soc_percent, mode='lines+markers', name='SoC (%)', line=dict(color='blue', dash='dash'), yaxis='y2'))
-    fig.add_trace(go.Scatter(x=hours_str, y=net_load, mode='lines+markers', name='Net Load (kW)', line=dict(color='black')))
-    fig.add_trace(go.Scatter(x=[hours_str[arrival_hour]], y=[soc_percent[arrival_hour]], mode='markers', name='Arrival', marker=dict(color='green', size=12), yaxis='y2'))
-    if soc_percent[departure_hour] is not None:
-       fig.add_trace(go.Scatter(
-        x=[hours_str[departure_hour]],
-        y=[soc_percent[departure_hour]],
-        mode='markers',
-        name='Departure',
-        marker=dict(color='red', size=12),
-        yaxis='y2'
-    ))
-
-    # Calcul dynamique du max pour l'axe Puissance (kW)
-    max_y = max(
-    max(pv_profile),
-    max(house_demand_profile),
-    max(net_load),
-    max(abs(x) for x in battery_flow)
-) * 1.2  # marge de 20%
-
-    max_y = min(max_y, 60)  # on limite à 60 pour éviter une échelle trop grande
-
-    fig.update_layout(
-        xaxis=dict(title='Heure'),
-        yaxis=dict(
-    title='Puissance (kW)',
-    side='left',
-    range=[0, max_y],
-    tick0=0,
-    dtick=5,
-),
-
-yaxis2=dict(title='SoC (%)',overlaying='y',side='right',range=[0, 100],tick0=0,dtick=10, ),
-        
-        height=650,
-        legend=dict(orientation="h", yanchor="top", y=1.12, xanchor="center", x=0.5),
-        margin=dict(t=80, b=60, l=60, r=60),
-        template="plotly_white"
+    fig, summary = run_simulation(
+        country=country,
+        month=month,
+        profile_name=profile_name,
+        arrival_hour=arrival_hour,
+        departure_hour=departure_hour,
+        initial_soc=initial_soc,
+        target_soc=target_soc,
+        num_vehicles=num_vehicles,
+        mode=mode,
+        vehicle_type=vehicle_type,
+        peak_power_kwp=peak_power_kwp
     )
 
-    fig.show()
+    st.plotly_chart(fig)
+    st.markdown(summary)
 
-    # === Résultats ===
-    summary_df = pd.DataFrame({
-        "hour": list(range(24)),
-        "house_demand": house_demand_profile,
-        "pv_generation": pv_profile,
-        "battery_flow": battery_flow
-    })
-    # 1. FLEXIBILITÉ brute (tout ce que la batterie a déchargé vers la maison)
-    flexibility_per_vehicle_kWh = max(0, battery_capacity_kWh * min(1.0 - target_soc, target_soc - min_soc_ratio))
-    flexibility_total_kWh = round(flexibility_per_vehicle_kWh * num_vehicles, 2)
-
-
-
-# 2. SOUTIEN utile (ce qui a vraiment aidé la maison)
-    ev_support = summary_df.apply(
-    lambda row: min(max(row["house_demand"] - row["pv_generation"], 0), -row["battery_flow"]) if row["battery_flow"] < 0 else 0,
-    axis=1
-)
-    total_ev = ev_support.sum()
-    ev_pct = round(100 * total_ev / summary_df["house_demand"].sum(), 2)
-
-    # === Détail des autonomies PV, VE et combinée ===
-    summary_df["hour"] = summary_df.index  # S'assurer que l'heure est bien présente
-    pv_support = summary_df.apply(
-    lambda row: min(row["house_demand"], row["pv_generation"]) if row["hour"] in connected_hours else 0,
-    axis=1
-)
-
-
-
-    total_demand = summary_df["house_demand"].sum()
-    total_pv = pv_support.sum()
-    total_ev = ev_support.sum()
-    total_combined = total_pv + total_ev
-
-    pv_pct = round(100 * total_pv / total_demand, 2)
-    ev_pct = round(100 * total_ev / total_demand, 2)
-    combined_pct = round(100 * total_combined / total_demand, 2)
-
-    # === Contribution de l'EV à la maison ===
-    battery_help_to_house = summary_df["battery_flow"].clip(upper=0).abs().sum()
-    ev_support_pct = round(100 * battery_help_to_house / summary_df["house_demand"].sum(), 2)
-
-    # Décharge utile = uniquement l'aide à la maison (hors décharge réseau en V2G pur)
-    battery_help_to_house = summary_df[["house_demand", "battery_flow"]].apply(
-           lambda row: min(-row["battery_flow"], row["house_demand"]) if row["battery_flow"] < 0 else 0, axis=1
-    ).sum()
-    # Flexibilité disponible en kWh = énergie utilisable entre min et max SoC pendant la connexion
-
-
-
-
-
-
-    covered_total = summary_df.apply(
-    lambda row: min(row["house_demand"], row["pv_generation"] + max(-row["battery_flow"], 0)),
-    axis=1
-)
-
-    self_suff_pct = round(100 * covered_total.sum() / summary_df["house_demand"].sum(), 2)
-
-
-    energy_charged_kWh = summary_df[summary_df["battery_flow"] > 0]["battery_flow"].sum()
-    # 3. Part de la charge VE venant du PV ou du réseau
-    ev_charge_pv = summary_df.apply(
-       lambda row: min(row["pv_generation"], row["battery_flow"]) if row["battery_flow"] > 0 else 0,
-        axis=1
-       ).sum()
-
-    ev_charge_grid = energy_charged_kWh - ev_charge_pv
-    ev_charge_pv = round(ev_charge_pv, 2)
-    ev_charge_grid = round(ev_charge_grid, 2)
-
-    energy_discharged_kWh = summary_df[summary_df["battery_flow"] < 0]["battery_flow"].abs().sum()
-
-    baseline_kWh_from_grid = [
-        max(house_demand_profile[h] - pv_profile[h], 0)
-        for h in connected_hours
-    ]
-    actual_kWh_from_grid = [
-        max(house_demand_profile[h] - pv_profile[h] - battery_flow[h], 0)
-        for h in connected_hours
-    ]
-    tariff_blocks = tariff_blocks_by_city[country]
-    tariff_rates = tariff_rates_by_city[country]
-
-    tariff_per_hour = []
-    for h in connected_hours:
-        if h in tariff_blocks["peak"]:
-           tariff_per_hour.append(tariff_rates["peak"])
-        elif h in tariff_blocks["mid_peak"]:
-             tariff_per_hour.append(tariff_rates["mid_peak"])
-        else:
-            tariff_per_hour.append(tariff_rates["off_peak"])
-
-
-    baseline_cost = sum([kwh * price for kwh, price in zip(baseline_kWh_from_grid, tariff_per_hour)])
-    actual_cost = sum([kwh * price for kwh, price in zip(actual_kWh_from_grid, tariff_per_hour)])
-    savings = round(baseline_cost - actual_cost, 2)
-
-    print(f" Total PV production during connection: {round(total_pv_connected, 2)} kWh")
-    print(f" flexibility from EV : {round(total_ev, 2)} kWh ({ev_pct} % of total demand)")
-    print(f" flexibility from PV: {round(total_pv, 2)} kWh ({pv_pct} % of total demand)")
-    print(f" Autonomy energetic (self-sufficiency) : {self_suff_pct} %")
-    print(f" Energy charged : {round(energy_charged_kWh, 2)} kWh")
-    print(f"    ↳ from PV : {ev_charge_pv} kWh")
-    print(f"    ↳ from Grid : {ev_charge_grid} kWh") 
-    print(f" Energy discharged : {round(energy_discharged_kWh, 2)} kWh")
-    print(f" Savings : {round(savings, 2)} €")
-
-# === Interface utilisateur Streamlit ===
-
-st.title("Simulateur V2H")
-
-country = st.selectbox("Ville", list(pv_data_by_country.keys()))
-month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
-profile_name = st.selectbox("Profil de consommation", list(user_profiles.keys()))
-mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
-vehicle_type = st.selectbox("Véhicule", list(vehicle_options.keys()))
-arrival_hour = st.slider("Heure d'arrivée", 0, 23, 8)
-departure_hour = st.slider("Heure de départ", 0, 23, 19)
-initial_soc = st.slider("SoC initial", 0.2, 0.8, 0.4, 0.05)
-target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
-num_vehicles = st.slider("Nombre de véhicules", 1, 10, 1)
-peak_power_kwp = st.slider("Puissance PV (kWp)", 0.5, 20.0, 1.0, 0.5)
-
-
-
-
-st.plotly_chart(fig)
-st.markdown(summary)
-
-  
+except Exception as e:
+    st.error(f"Erreur lors de la simulation : {e}")
