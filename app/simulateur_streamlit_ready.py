@@ -498,7 +498,7 @@ yaxis2=dict(title='SoC (%)',overlaying='y',side='right',range=[0, 100],tick0=0,d
     num_vehicles=IntSlider(min=1, max=10, step=1, value=1, description="Number of vehicles"),
     peak_power_kwp=FloatSlider(min=0.5, max=20.0, step=0.5, value=1.0, description="PV kWp"),
 
-)
+
 def lancer_simulation():
     config = {
         "country": "Paris",  # ou Ljubljana, etc.
