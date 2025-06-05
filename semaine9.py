@@ -719,7 +719,6 @@ month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
 profile_name = st.selectbox("Profil de consommation", list(user_profiles.keys()))
 mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
 vehicle_type = st.selectbox("Véhicule", list(vehicle_options.keys()))
-
 arrival_hour = st.slider("Heure d'arrivée", 0, 23, 8)
 departure_hour = st.slider("Heure de départ", 0, 23, 19)
 initial_soc = st.slider("SoC initial", 0.2, 0.8, 0.4, 0.05)
@@ -727,18 +726,7 @@ target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
 num_vehicles = st.slider("Nombre de véhicules", 1, 10, 1)
 peak_power_kwp = st.slider("Puissance PV (kWp)", 0.5, 20.0, 1.0, 0.5)
 
-fig, summary = run_simulation(
-    country=st.selectbox(...),
-    month=st.selectbox(...),
-    profile_name=st.selectbox(...),
-    arrival_hour=st.slider(...),
-    departure_hour=st.slider(...),
-    initial_soc=st.slider(...),
-    target_soc=st.slider(...),
-    num_vehicles=st.slider(...),
-    mode=st.selectbox(...),
-    vehicle_type=st.selectbox(...),
-    peak_power_kwp=st.slider(...)
+
 )
 
 st.plotly_chart(fig)
