@@ -498,8 +498,7 @@ def lancer_simulation():
         "soc_target": 0.7
     }
 
-    simulator = Simulator(**config)
-    simulator.run()
-    fig = simulator.plot()
-    df = simulator.results
-    return fig, df
+  fig, df = run_simulation(**config)
+  return fig, df
+
+    
