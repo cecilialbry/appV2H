@@ -344,7 +344,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     max_y = max(max(pv_profile), max(house_demand_profile), max(net_load), max(abs(x) for x in battery_flow)) * 1.2
     max_y = min(max_y, 60)
 
-    fig.update_layout(
+fig.update_layout(
     xaxis=dict(title='Heure'),
     yaxis=dict(title='Puissance (kW)', side='left', range=[0, max_y], tick0=0, dtick=5),
     yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100], tick0=0, dtick=10),
