@@ -727,7 +727,7 @@ num_vehicles = st.slider("Nombre de véhicules", 1, 10, 1)
 peak_power_kwp = st.slider("Puissance PV (kWp)", 0.5, 20.0, 1.0, 0.5)
 
 
-)
+
 
 st.plotly_chart(fig)
 st.markdown(summary)
