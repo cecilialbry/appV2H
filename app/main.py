@@ -1,5 +1,6 @@
 import streamlit as st
-from app.simulateur import lancer_simulation
+from simulateur import lancer_simulation
+
 
 st.set_page_config(page_title="V2H Simulator", layout="wide")
 st.title("🔋 V2H Energy Simulator")
