@@ -1,3 +1,12 @@
+import streamlit as st
+
+def main():
+    st.title("Simulateur V2H")
+    initial_soc = st.slider("SoC initial", min_value=0.2, max_value=1.0, step=0.05, value=0.5)
+    # ... mets ici tout ton code (en décalant)
+
+if __name__ == "__main__":
+    main()
 # %%
 
 from unittest import result
