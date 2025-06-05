@@ -484,18 +484,17 @@ yaxis2=dict(title='SoC (%)',overlaying='y',side='right',range=[0, 100],tick0=0,d
 
 
 def lancer_simulation():
-    # Configuration par défaut
     config = {
+        "arrival_hour": 17,
+        "departure_hour": 8,
+        "initial_soc": 0.3,
+        "target_soc": 0.6,
         "country": "France",
-        "month": "january",
+        "month": "January",
         "profile": "standard",
         "mode": "V2H",
-        "pv_kwp": 3,
-        "vehicle_type": "car",
-        "arrival_hour": 18,
-        "departure_hour": 8,
-        "soc_init": 50,
-        "soc_target": 80
+        "vehicle": "voiture",
+        "pv_size_kwp": 6
     }
 
     fig, df = run_simulation(**config)
