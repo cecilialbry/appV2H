@@ -343,25 +343,21 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
     max_y = max(max(pv_profile), max(house_demand_profile), max(net_load), max(abs(x) for x in battery_flow)) * 1.2
     max_y = min(max_y, 60)
-
-fig.update_layout(
+    fig.update_layout(
     xaxis=dict(title='Heure'),
     yaxis=dict(title='Puissance (kW)', side='left', range=[0, max_y], tick0=0, dtick=5),
     yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100], tick0=0, dtick=10),
-    width=1200,   # largeur étendue
-    height=700,   # hauteur ajustée
-    margin=dict(l=100, r=100, t=80, b=80),  # marges pour éviter le découpage
+    width=1200,
+    height=700,
+    margin=dict(t=80, b=60, l=60, r=60),
     legend=dict(orientation="h", yanchor="top", y=1.12, xanchor="center", x=0.5),
     template="plotly_white"
 )
 
+
         
     
-        legend=dict(orientation="h", yanchor="top", y=1.12, xanchor="center", x=0.5),
-        margin=dict(t=80, b=60, l=60, r=60),
-        template="plotly_white"
-    )
-
+     
     summary_text = f"""
     ### Résultats Simulation
 
