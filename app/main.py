@@ -33,7 +33,7 @@ mode = st.sidebar.selectbox("Simulation mode:", ["V2H", "V2B", "V2G"])
 
 peak_power_kwp = st.sidebar.slider("PV peak power (kWp):", 1, 20, 5)
 
-country = st.sidebar.selectbox("Select country:", ["France", "Slovenia", "Denmark", "Greece", "Portugal"])
+city = st.sidebar.selectbox("Select location:", ["Paris", "Ljubljana", "Copenhagen", "Athens", "Lisbon"])
 month = st.sidebar.selectbox("Select month:", list(range(1, 13)))
 
 # Launch simulation
