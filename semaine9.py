@@ -348,7 +348,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
         xaxis=dict(title='Heure'),
         yaxis=dict(title='Puissance (kW)', side='left', range=[0, max_y], tick0=0, dtick=5),
         yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100], tick0=0, dtick=10),
-        height=1000,
+        height=600,
         
     
         legend=dict(orientation="h", yanchor="top", y=1.12, xanchor="center", x=0.5),
