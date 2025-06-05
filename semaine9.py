@@ -220,6 +220,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour, i
            return min(energy_needed, max_kWh_per_hour, battery_capacity_kWh - current_soc)
 
     
+        return fig, summary_text
 
         return 0
 
