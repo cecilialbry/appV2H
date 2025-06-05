@@ -1,6 +1,6 @@
 
 import streamlit as st
-from simulateur_streamlit_ready.py import run_simulation
+from simulateur_streamlit_ready import run_simulation
 
 st.set_page_config(page_title="V2H Simulator", layout="wide")
 st.title("Vehicle-to-Home (V2H) Energy Simulation")
