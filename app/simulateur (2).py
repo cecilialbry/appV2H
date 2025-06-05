@@ -517,7 +517,9 @@ def lancer_simulation():
         "soc_start": 0.4,
         "soc_target": 0.7
     }
-
+   
+   
+    print("Simulation lancée avec :", country, month, profile_name, arrival_hour)
     simulator = Simulator(**config)
     simulator.run()
     fig = simulator.plot()
