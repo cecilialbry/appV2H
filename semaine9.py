@@ -153,7 +153,7 @@ vehicle_options = {
 }
 # === Fonction de simulation simplifiée (colle ta vraie fonction ici) ===
 
-    def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
+def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
                    initial_soc, target_soc, num_vehicles, mode, vehicle_type, peak_power_kwp):
     battery_capacity_kWh = 70
     max_kWh_per_hour = 11
