@@ -2,6 +2,8 @@
 
 Ce dépôt contient l’**application Streamlit** du simulateur énergétique V2H (*Vehicle-to-Home*), développée dans le cadre d’un stage au laboratoire LUCAMI – Université de Ljubljana.
 
+lien vers l'app : https://appv2h-juezzmflsjsuvucgecthpd.streamlit.app/
+
 ## 🎯 Objectif
 
 Proposer une interface simple et interactive pour simuler les échanges d’énergie entre :
