@@ -370,7 +370,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
       - from PV: {ev_charge_pv} kWh
       - from Grid: {ev_charge_grid} kWh
     - Energy discharged: {round(energy_discharged_kWh, 2)} kWh
-    - Savings: {round(savings, 2)} €
+    - Savings: {abs(round(savings, 2))} €
     """
 
     return fig, summary_text
