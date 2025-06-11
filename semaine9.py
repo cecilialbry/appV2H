@@ -373,7 +373,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     - Savings: {abs(round(savings, 2))} €
     """
 
-    return fig, summary_text, {
+    return fig, summary, {
      "energy_charged": round(energy_charged_kWh, 2),
      "charged_from_pv": ev_charge_pv,
      "charged_from_grid": ev_charge_grid,
