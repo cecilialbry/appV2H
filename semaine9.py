@@ -377,37 +377,43 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
 
 # === Interface Streamlit ===
-
+st.set_page_config(page_title="Simulateur V2H", layout="wide")
 st.title("🔌 Simulateur énergétique V2H")
-st.caption("Simulation heure par heure de l’interaction entre véhicule, maison et réseau")
+st.caption("Simulation heure par heure de l’interaction entre véhicule, maison, PV et réseau")
+
+# LIGNE 1 : Choix généraux
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    country = st.selectbox("Ville", list(pv_data_by_country.keys()))
+with col2:
+    month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
+with col3:
+    profile_name = st.selectbox("Profil utilisateur", list(user_profiles.keys()))
+with col4:
+    mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
+
+# LIGNE 2 : Infos véhicule
+col5, col6, col7, col8 = st.columns(4)
+with col5:
+    vehicle_type = st.selectbox("Véhicule", list(vehicle_options.keys()))
+with col6:
+    arrival_hour = st.slider("Heure d'arrivée", 0, 23, 8)
+with col7:
+    departure_hour = st.slider("Heure de départ", 0, 23, 19)
+with col8:
+    num_vehicles = st.slider("Nombre de véhicules", 1, 10, 1)
+
+# LIGNE 3 : SoC et PV
+col9, col10, col11 = st.columns(3)
+with col9:
+    initial_soc = st.slider("SoC initial", 0.2, 0.8, 0.4, 0.05)
+with col10:
+    target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
+with col11:
+    peak_power_kwp = st.slider("Puissance crête PV (kWp)", 0.5, 20.0, 1.0, 0.5)
 
 
 try:
-   with st.expander("🔧 Paramètres de simulation", expanded=True):
-    country = st.selectbox("Ville", list(pv_data_by_country.keys()))
-    month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
-    profile_name = st.selectbox("Profil utilisateur", list(user_profiles.keys()))
-    mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
-    vehicle_type = st.selectbox("Véhicule", list(vehicle_options.keys()))
-
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        arrival_hour = st.slider("Heure d'arrivée", 0, 23, 8)
-    with col2:
-        departure_hour = st.slider("Heure de départ", 0, 23, 19)
-    with col3:
-        num_vehicles = st.slider("Nombre de véhicules", 1, 10, 1)
-
-    col4, col5, col6 = st.columns(3)
-    with col4:
-        initial_soc = st.slider("SoC initial", 0.2, 0.8, 0.4, 0.05)
-    with col5:
-        target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
-    with col6:
-        peak_power_kwp = st.slider("Puissance crête PV (kWp)", 0.5, 20.0, 1.0, 0.5)
-
-
-
     fig, summary = run_simulation(
         country=country,
         month=month,
@@ -422,12 +428,13 @@ try:
         peak_power_kwp=peak_power_kwp
     )
 
-    tab1, tab2 = st.tabs(["📊 Graphique", "📄 Résumé"])
+    st.subheader("📈 Résultats de la simulation")
+    st.plotly_chart(fig, use_container_width=True)
 
-    with tab1:
-     st.plotly_chart(fig, use_container_width=True)
+    st.subheader("📄 Résumé des indicateurs")
+    st.markdown(summary)
 
-    with tab2:
-      st.markdown(summary)
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
+
+
