@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-st.set_page_config(page_title="Simulateur énergétique V2H", layout="wide")
+st.set_page_config(page_title="V2H simulator", layout="wide")
 
 st.markdown("""
 <style>
@@ -505,14 +505,14 @@ try:
         st.markdown(
             f"""
             <div style='text-align: right; font-size: 1.2em; line-height: 1.9; margin-top: 0rem;'>
-            <h4 style='margin-bottom: 0.5rem;'>🔎 Résumé</h4>
-            ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
-            🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
-            🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
-            🔌 <b>Charge PV :</b> {ev_charge_pv} kWh<br>
-            ⚡ <b>Charge Réseau :</b> {ev_charge_grid} kWh<br>
-            🔻 <b>Décharge :</b> {round(energy_discharged_kWh, 2)} kWh<br>
-            💰 <b>Économies :</b> {abs(savings)} €
+            <h4 style='margin-bottom: 0.5rem;'>🔎 Results</h4>
+            ☀️ <b>PV production during connection(KWh) :</b> {round(total_pv_connected, 2)} kWh<br>
+            🔋 <b>Vehicle :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
+            🏡 <b>Self-sufficiency :</b> {self_suff_pct}%<br>
+            🔌 <b>charged From PV:</b> {ev_charge_pv} kWh<br>
+            ⚡ <b>charged From grid:</b> {ev_charge_grid} kWh<br>
+            🔻 <b>discharged :</b> {round(energy_discharged_kWh, 2)} kWh<br>
+            💰 <b>savings :</b> {abs(savings)} €
             </div>
             """, unsafe_allow_html=True
         )
