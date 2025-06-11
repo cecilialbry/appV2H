@@ -404,9 +404,15 @@ def simulateur_v2h_interface(side_id):
         peak_power_kwp=peak_power_kwp
     )
 
-    st.plotly_chart(fig, use_container_width=True, key=f"plot_{side_id}")
+        st.plotly_chart(fig, use_container_width=True, key=f"plot_{side_id}")
+        st.markdown(summary)
 
-    st.markdown(summary)
+    # Retourne aussi les valeurs utiles pour comparaison
+        return {
+          "summary_text": summary,
+          "fig": fig
+    }
+
 
 # === Interface Streamlit ===
 
@@ -416,7 +422,21 @@ st.title("Comparaison de deux scénarios V2H")
 col1, col2 = st.columns(2)
 
 with col1:
-    simulateur_v2h_interface("left")
+    result_left = simulateur_v2h_interface("left")
 
 with col2:
-    simulateur_v2h_interface("right")
+    result_right = simulateur_v2h_interface("right")
+st.markdown("---")
+st.subheader("📊 Comparaison des scénarios")
+
+col1b, col2b = st.columns(2)
+
+with col1b:
+    st.markdown("### 🔹 Résumé Scénario Gauche")
+    st.markdown(result_left["summary_text"])
+
+with col2b:
+    st.markdown("### 🔸 Résumé Scénario Droit")
+    st.markdown(result_right["summary_text"])
+
+
