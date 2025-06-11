@@ -491,8 +491,10 @@ try:
 
     fig = results[0]
     (total_pv_connected, total_ev, ev_pct, total_pv, pv_pct,
-     self_suff_pct, ev_charge_pv, ev_charge_grid,
-     energy_discharged_kWh, savings) = results[1:]
+    self_suff_pct, ev_charge_pv, ev_charge_grid,
+    energy_discharged_kWh, savings,
+    energy_charged_kWh, pv_support) = results[1:]
+
 
     col_left, col_right = st.columns([3.5, 0.7], gap="small")
 
