@@ -1,12 +1,22 @@
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
-
-st.markdown("<h3 style='margin-bottom:0.5rem;'>🔌 Simulateur énergétique V2H</h3>", unsafe_allow_html=True)
-
 st.markdown("""
 <style>
-/* Réduit les marges en haut et en bas de la page */
+/* Supprime l’espace en haut de page */
+header[data-testid="stHeader"] {
+    height: 0rem;
+    padding: 0rem;
+    margin: 0rem;
+}
+
+/* Réduit le padding global */
+.block-container {
+    padding-top: 0.3rem;
+    padding-bottom: 0.2rem;
+}
+
+/* Réduit les marges internes */
 section.main > div:first-child {
     padding-top: 0rem;
 }
@@ -14,12 +24,12 @@ section.main > div:last-child {
     padding-bottom: 0rem;
 }
 
-/* Réduit la taille du texte global */
+/* Taille texte globale */
 html, body, [class*="css"] {
     font-size: 13px;
 }
 
-/* Réduit la hauteur des sliders */
+/* Sliders */
 .stSlider > div {
     padding-top: 0.1rem;
     padding-bottom: 0.1rem;
@@ -33,37 +43,23 @@ html, body, [class*="css"] {
     margin-top: -3px;
 }
 
-/* Réduit l’espace entre les blocs de contenu */
-section.main > div {
-    gap: 0.2rem;
-}
-
-/* Réduit l’espace autour des widgets */
-.css-1kyxreq {
-    margin-top: 0rem;
-    margin-bottom: 0.1rem;
-}
-
-/* Réduit la taille du titre */
-h1 {
-    font-size: 1.5rem;
-    margin-bottom: 0.2rem;
-}
-
-/* Enlève le scroll vertical */
+/* Évite le scroll vertical */
 [aria-label="Main content"] > div {
     overflow-y: hidden;
 }
-</style>
-""", unsafe_allow_html=True
-/* Réduction espace autour des titres */
+
+/* Marge minimale entre titres et blocs */
 h1, h2, h3 {
     margin-top: 0.2rem !important;
     margin-bottom: 0.2rem !important;
 }
 
-
-
+/* Réduit espace entre les colonnes */
+section.main > div {
+    gap: 0.2rem;
+}
+</style>
+""", unsafe_allow_html=True)
 
 
 pv_data_by_country = {
@@ -444,7 +440,8 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
 
 # === Interface Streamlit ===
-st.title("🔌 Simulateur énergétique V2H")
+st.markdown("<h3 style='margin-bottom:0.2rem;'>🔌 Simulateur énergétique V2H</h3>", unsafe_allow_html=True)
+
 
 # LIGNE 1
 # LIGNE 1 : sélection de contexte
