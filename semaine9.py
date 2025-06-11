@@ -445,19 +445,19 @@ with col1:
 with col2:
     result_right = simulateur_v2h_interface("right")
 st.markdown("---")
-st.subheader("📊 Comparaison complète des scénarios")
+st.subheader("comparison of scenarios")
 
 # Noms d'affichage
 kpi_names = {
-    "energy_charged": "Énergie chargée (kWh)",
-    "charged_from_pv": "Chargée depuis PV (kWh)",
-    "charged_from_grid": "Chargée depuis réseau (kWh)",
-    "energy_discharged": "Énergie déchargée (kWh)",
-    "ev_flex": "Flexibilité VE (kWh)",
-    "pv_production_connected": "PV pendant la connexion (kWh)",
-    "pv_support_house": "Soutien PV à la maison (kWh)",
-    "self_suff_pct": "Autonomie énergétique (%)",
-    "savings": "Économies (€)"
+    "energy_charged": "Energy charged (kWh)",
+    "charged_from_pv": "Charged from PV (kWh)",
+    "charged_from_grid": "Charged from grid (kWh)",
+    "energy_discharged": "Discharged (kWh)",
+    "ev_flex": "Flexibility (kWh)",
+    "pv_production_connected": "PV production during connection(KWh)",
+    "pv_support_house": "PV support to the house (kWh)",
+    "self_suff_pct": "Self-sufficiency (%)",
+    "savings": "Savings (€)"
 }
 
 # Indique si plus haut = mieux (False = moins est mieux, ex: consommation réseau)
@@ -476,11 +476,11 @@ reverse_logic = {
 # Comparateur intelligent
 def highlight_better(val1, val2, reverse=False):
     if val1 > val2:
-        return "✅ Gauche" if not reverse else "✅ Droite"
+        return "✅Left" if not reverse else "Right"
     elif val2 > val1:
-        return "✅ Droite" if not reverse else "✅ Gauche"
+        return "Right" if not reverse else "Left"
     else:
-        return "Égalité"
+        return "Draw"
 
 # Récupération des KPIs
 kpi_left = result_left["kpi"]
@@ -488,33 +488,33 @@ kpi_right = result_right["kpi"]
 
 # Construction du tableau
 comparison_data = {
-    "Indicateur": [],
-    "Scénario Gauche": [],
-    "Scénario Droit": [],
-    "Meilleur": []
+    "Indicator: [],
+    "Left scenario ": [],
+    "Right scenario ": [],
+    "Best": []
 }
 
 for key, label in kpi_names.items():
     val1 = kpi_left[key]
     val2 = kpi_right[key]
     best = highlight_better(val1, val2, reverse=reverse_logic.get(key, False))
-    comparison_data["Indicateur"].append(label)
-    comparison_data["Scénario Gauche"].append(val1)
-    comparison_data["Scénario Droit"].append(val2)
-    comparison_data["Meilleur"].append(best)
+    comparison_data["Indicator"].append(label)
+    comparison_data["Left scenario "].append(val1)
+    comparison_data["Right scenario "].append(val2)
+    comparison_data["Best"].append(best)
 
 comparison_df = pd.DataFrame(comparison_data)
 st.table(comparison_df)
 
 # Score final
-score_left = comparison_df["Meilleur"].tolist().count("✅ Gauche")
-score_right = comparison_df["Meilleur"].tolist().count("✅ Droite")
+score_left = comparison_df["Best"].tolist().count("✅ Gauche")
+score_right = comparison_df["Best"].tolist().count("✅ Droite")
 
 if score_left > score_right:
-    gagnant = "🏆 Le scénario gauche est globalement le meilleur."
+    gagnant = "Left scenario is the best"
 elif score_right > score_left:
-    gagnant = "🏆 Le scénario droit est globalement le meilleur."
+    gagnant = "Right scenario is the best"
 else:
-    gagnant = "⚖️ Les deux scénarios sont équivalents."
+    gagnant = "Both scenario are equivalent"
 
-st.markdown(f"### {gagnant}")
+st.markdown(f"### {winner}")
