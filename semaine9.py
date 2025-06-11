@@ -424,12 +424,10 @@ try:
 
     tab1, tab2 = st.tabs(["📊 Graphique", "📄 Résumé"])
 
-with tab1:
-    st.plotly_chart(fig, use_container_width=True)
+    with tab1:
+     st.plotly_chart(fig, use_container_width=True)
 
-with tab2:
-    st.markdown(summary)
-
-
+    with tab2:
+      st.markdown(summary)
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
