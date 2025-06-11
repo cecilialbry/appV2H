@@ -380,35 +380,34 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 st.title("🔌 Simulateur énergétique V2H")
 
 # LIGNE 1
-col1, col2, col3, col4 = st.columns(4)
-with col1:
+# LIGNE 1 : sélection de contexte
+row1 = st.columns(6)
+with row1[0]:
     country = st.selectbox("Ville", list(pv_data_by_country.keys()))
-with col2:
+with row1[1]:
     month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
-with col3:
-    profile_name = st.selectbox("Profil utilisateur", list(user_profiles.keys()))
-with col4:
+with row1[2]:
+    profile_name = st.selectbox("Profil", list(user_profiles.keys()))
+with row1[3]:
     mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
-
-# LIGNE 2
-col5, col6, col7, col8 = st.columns(4)
-with col5:
+with row1[4]:
     vehicle_type = st.selectbox("Véhicule", list(vehicle_options.keys()))
-with col6:
-    arrival_hour = st.slider("Arrivée", 0, 23, 8)
-with col7:
-    departure_hour = st.slider("Départ", 0, 23, 19)
-with col8:
-    num_vehicles = st.slider("Véhicules", 1, 10, 1)
+with row1[5]:
+    num_vehicles = st.slider("Nb véhicules", 1, 10, 1)
 
-# LIGNE 3
-col9, col10, col11 = st.columns(3)
-with col9:
-    initial_soc = st.slider("SoC initial", 0.2, 0.8, 0.4, 0.05)
-with col10:
+# LIGNE 2 : sliders techniques
+row2 = st.columns(5)
+with row2[0]:
+    arrival_hour = st.slider("Arrivée", 0, 23, 8)
+with row2[1]:
+    departure_hour = st.slider("Départ", 0, 23, 19)
+with row2[2]:
+    initial_soc = st.slider("SoC init.", 0.2, 0.8, 0.4, 0.05)
+with row2[3]:
     target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
-with col11:
-    peak_power_kwp = st.slider("Puissance crête PV (kWp)", 0.5, 20.0, 1.0, 0.5)
+with row2[4]:
+    peak_power_kwp = st.slider("PV (kWp)", 0.5, 20.0, 1.0, 0.5)
+
 
 # === Simulation + affichage
 try:
