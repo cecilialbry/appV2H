@@ -4,6 +4,7 @@ Ce dépôt contient l’**application Streamlit** du simulateur énergétique V2
 
 lien vers 1er version de l'app : https://appv2h-juezzmflsjsuvucgecthpd.streamlit.app/
 lien vers version optimisée : https://appv2h-bwyfw87l7f2hkcui2o9ru4.streamlit.app/
+lien version comparaison : https://appv2h-7jqrlvgtjyd6h7wkjzka6x.streamlit.app/
 
 ## 🎯 Objectif
 
