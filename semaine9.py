@@ -2,6 +2,55 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 st.set_page_config(page_title='Simulator V2H', layout='wide')
+st.markdown(
+    """
+    <style>
+    /* Réduit la taille du texte partout */
+    html, body, [class*="css"]  {
+        font-size: 13px;
+    }
+
+    /* Réduit la taille des sliders */
+    .stSlider > div {
+        padding-top: 0.1rem;
+        padding-bottom: 0.1rem;
+    }
+
+    /* Réduit les marges autour des widgets */
+    .stSelectbox, .stNumberInput, .stRadio, .stSlider {
+        margin-bottom: 0.2rem;
+    }
+
+    /* Réduit l'espace sous les titres */
+    h1, h2, h3, h4 {
+        margin-bottom: 0.4rem;
+    }
+
+    /* Réduit la taille des labels */
+    label {
+        font-size: 0.85em !important;
+    }
+
+    /* Réduit l'épaisseur des sliders */
+    .stSlider .rc-slider {
+        height: 10px;
+    }
+
+    .stSlider .rc-slider-handle {
+        height: 16px;
+        width: 16px;
+        margin-top: -4px;
+    }
+
+    /* Réduit la hauteur globale des blocs Streamlit */
+    section.main > div {
+        padding-top: 0.5rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 
 pv_data_by_country = {
     "Paris": {
