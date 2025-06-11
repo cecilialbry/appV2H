@@ -1,4 +1,4 @@
-import streamlit as st
+ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 st.set_page_config(page_title='Simulator V2H', layout='wide')
@@ -417,39 +417,78 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 # === Interface Streamlit ===
 st.title("🔌 Simulateur énergétique V2H")
 
-col_left, col_center, col_right = st.columns([1.2, 2.5, 1.3])
-
-with col_left:
+# LIGNE 1
+# LIGNE 1 : sélection de contexte
+row1 = st.columns(6)
+with row1[0]:
     country = st.selectbox("Ville", list(pv_data_by_country.keys()))
+with row1[1]:
     month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
-    profile_name = st.selectbox("Profil utilisateur", list(user_profiles.keys()))
-    arrival_hour = st.slider("Heure d'arrivée", 0, 23, 18)
-    departure_hour = st.slider("Heure de départ", 0, 23, 8)
-    initial_soc = st.slider("SoC à l'arrivée (%)", 0, 100, 30)
-    target_soc = st.slider("SoC au départ (%)", 0, 100, 80)
-    num_vehicles = st.number_input("Nombre de véhicules", 1, 10, 1)
-    mode = st.selectbox("Mode", ["V2H", "V2B", "V2G"])
-    vehicle_type = st.selectbox("Type de véhicule", list(vehicle_options.keys()))
-    peak_power_kwp = st.slider("Puissance crête PV (kWp)", 1, 20, 5)
-    
+with row1[2]:
+    profile_name = st.selectbox("Profil", list(user_profiles.keys()))
+with row1[3]:
+    mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
+with row1[4]:
+    vehicle_type = st.selectbox("Véhicule", list(vehicle_options.keys()))
+with row1[5]:
+    num_vehicles = st.slider("Nb véhicules", 1, 10, 1)
 
+# LIGNE 2 : sliders techniques
+row2 = st.columns(5)
+with row2[0]:
+    arrival_hour = st.slider("Arrivée", 0, 23, 8)
+with row2[1]:
+    departure_hour = st.slider("Départ", 0, 23, 19)
+with row2[2]:
+    initial_soc = st.slider("SoC init.", 0.2, 0.8, 0.4, 0.05)
+with row2[3]:
+    target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
+with row2[4]:
+    peak_power_kwp = st.slider("PV (kWp)", 0.5, 20.0, 1.0, 0.5)
 
 
 # === Simulation + afficha
 try:
-        fig, summary = run_simulation(
-            country, month, profile_name,
-            arrival_hour, departure_hour,
-            initial_soc, target_soc,
-            num_vehicles, mode, vehicle_type,
-            peak_power_kwp
+    results = run_simulation(
+        country=country,
+        month=month,
+        profile_name=profile_name,
+        arrival_hour=arrival_hour,
+        departure_hour=departure_hour,
+        initial_soc=initial_soc,
+        target_soc=target_soc,
+        num_vehicles=num_vehicles,
+        mode=mode,
+        vehicle_type=vehicle_type,
+        peak_power_kwp=peak_power_kwp
+    )
+
+    fig = results[0]
+    (total_pv_connected, total_ev, ev_pct, total_pv, pv_pct,
+     self_suff_pct, ev_charge_pv, ev_charge_grid,
+     energy_discharged_kWh, savings) = results[1:]
+
+    col_left, col_right = st.columns([3.5, 0.7])
+    with col_left:
+      st.plotly_chart(fig, use_container_width=True, height=300)
+  # graphique plus court
+
+    
+    with col_right:
+        st.markdown(
+            f"""
+            <div style='text-align: right; font-size: 0.9em; line-height: 1.6;'>
+            <h5>🔎 Résumé</h5>
+            ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
+            🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
+            🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
+            🔌 <b>Charge PV :</b> {ev_charge_pv} kWh<br>
+            ⚡ <b>Charge Réseau :</b> {ev_charge_grid} kWh<br>
+            🔻 <b>Décharge :</b> {round(energy_discharged_kWh, 2)} kWh<br>
+            💰 <b>Économies :</b> {abs(savings)} €
+            </div>
+            """, unsafe_allow_html=True
         )
 
-        with col_center:
-            st.plotly_chart(fig, use_container_width=True, height=330)
-
-        with col_right:
-            st.markdown(summary)
-
 except Exception as e:
-        st.error(f"Erreur : {e}")
+    st.error(f"Erreur lors de la simulation : {e}")
