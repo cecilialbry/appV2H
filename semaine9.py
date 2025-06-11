@@ -273,6 +273,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
     summary_df = pd.DataFrame({
         "hour": list(range(24)),
+    
         "house_demand": house_demand_profile,
         "pv_generation": pv_profile,
         "battery_flow": battery_flow
@@ -369,7 +370,9 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 """
 
 
-    return fig, total_pv_connected, total_ev, self_suff_pct, savings  # ✅ nouveau
+    return fig, total_pv_connected, total_ev, self_suff_pct, savings, energy_charged_kWh, ev_charge_pv, ev_charge_grid, energy_discharged_kWh
+
+
 
 
 
@@ -406,9 +409,9 @@ with row2[4]:
     peak_power_kwp = st.slider("PV (kWp)", 0.5, 20.0, 1.0, 0.5)
 
 
-# === Simulation + affichage
+# === Simulation + afficha
 try:
-    fig, total_pv_connected, total_ev, self_suff_pct, savings = run_simulation(
+    fig, total_pv_connected, total_ev, self_suff_pct, savings, energy_charged_kWh, ev_charge_pv, ev_charge_grid, energy_discharged_kWh = run_simulation(
         country=country,
         month=month,
         profile_name=profile_name,
@@ -422,21 +425,23 @@ try:
         peak_power_kwp=peak_power_kwp
     )
 
-    summary = f"""
-    ##### Résumé
-    - ⚡ PV : **{round(total_pv_connected, 2)}** kWh  
-    - 🔋 Véhicule : **{round(total_ev, 2)}** kWh  
-    - 🏠 Autonomie : **{self_suff_pct}** %  
-    - 💰 Économies : **{abs(round(savings, 2))}** €  
-    """
-
-    col_left, col_right = st.columns([3, 1])
+    col_left, col_right = st.columns([2.5, 1])  # élargit le graphe, réduit les résultats
 
     with col_left:
-        st.plotly_chart(fig, use_container_width=True, height=220)
+        st.plotly_chart(fig, use_container_width=True, height=700)
+
     with col_right:
-        st.markdown(f"<div style='font-size: 14px'>{summary}</div>", unsafe_allow_html=True)
+        st.markdown("### Résumé")
+        st.markdown(f"""
+        ⚡ **PV pendant connexion** : **{total_pv_connected:.2f} kWh**  
+        🔋 **Flexibilité du véhicule** : **{total_ev:.2f} kWh**  
+        ↪️ **Énergie chargée** : **{energy_charged_kWh:.2f} kWh**  
+        &nbsp;&nbsp;&nbsp;&nbsp;☀️ PV : **{ev_charge_pv:.2f} kWh**  
+        &nbsp;&nbsp;&nbsp;&nbsp;🔌 Réseau : **{ev_charge_grid:.2f} kWh**  
+        🔄 **Énergie déchargée** : **{energy_discharged_kWh:.2f} kWh**  
+        🏠 **Autonomie énergétique** : **{self_suff_pct:.2f} %**  
+        💰 **Économies** : **{savings:.2f} €**
+        """)
 
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
-
