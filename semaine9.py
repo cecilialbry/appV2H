@@ -431,10 +431,11 @@ try:
      self_suff_pct, ev_charge_pv, ev_charge_grid,
      energy_discharged_kWh, savings) = results[1:]
 
-    col_left, col_right = st.columns([2.5, 1])
-    
+    col_left, col_right = st.columns([3.5, 0.7])  # graphique plus large, résumé plus fin
+
     with col_left:
-        st.plotly_chart(fig, use_container_width=True, height=600)
+      st.plotly_chart(fig, use_container_width=True, height=450)  # graphique plus court
+
     
     with col_right:
         st.markdown(
