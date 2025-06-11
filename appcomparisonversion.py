@@ -389,7 +389,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
 
 def simulateur_v2h_interface(side_id):
-    st.subheader(f"Scénario {side_id.upper()}")
+    st.subheader(f"Scenario {side_id.upper()}")
 
     country = st.selectbox("City", list(pv_data_by_country.keys()), key=f"country_{side_id}")
     month = st.selectbox("Month", list(pv_data_by_country[country].keys()), key=f"month_{side_id}")
