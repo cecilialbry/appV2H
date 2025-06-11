@@ -2,6 +2,14 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 st.set_page_config(page_title='Simulator V2H', layout='wide')
+# Widgets communs pour les deux simulateurs (en haut de page)
+st.markdown("### Paramètres globaux")
+profile_name = st.selectbox("Profil utilisateur", list(user_profiles.keys()), key="profile")
+mode = st.selectbox("Mode", ["V2H", "V2B", "V2G"], key="mode")
+vehicle_type = st.selectbox("Type de véhicule", list(vehicle_options.keys()), key="vehicle")
+num_vehicles = st.slider("Nombre de véhicules", 1, 5, 1, key="nb_veh")
+peak_power_kwp = st.slider("Puissance crête PV (kWp)", 1, 10, 3, key="pv_kwp")
+
 
 pv_data_by_country = {
     "Paris": {
