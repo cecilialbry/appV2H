@@ -493,28 +493,26 @@ try:
     (total_pv_connected, total_ev, ev_pct, total_pv, pv_pct,
      self_suff_pct, ev_charge_pv, ev_charge_grid,
      energy_discharged_kWh, savings) = results[1:]
-    col_left, col_right = st.columns([3, 1.2])
+    col_left, col_right = st.columns([3.5, 0.7], gap="small")
+with col_left:
+    st.plotly_chart(fig, use_container_width=True)
 
-    with col_left:
-      st.plotly_chart(fig, use_container_width=True)
-  # graphique plus court
+with col_right:
+    st.markdown(
+        f"""
+        <div style='text-align: right; font-size: 1.05em; line-height: 1.7; margin-top: 0rem;'>
+        <h5 style='margin-bottom: 0.5rem;'>🔎 Résumé</h5>
+        ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
+        🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
+        🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
+        🔌 <b>Charge PV :</b> {ev_charge_pv} kWh<br>
+        ⚡ <b>Charge Réseau :</b> {ev_charge_grid} kWh<br>
+        🔻 <b>Décharge :</b> {round(energy_discharged_kWh, 2)} kWh<br>
+        💰 <b>Économies :</b> {abs(savings)} €
+        </div>
+        """, unsafe_allow_html=True
+    )
 
-    
-    with col_right:
-        st.markdown(
-            f"""
-            <div style='text-align: right; font-size: 0.9em; line-height: 1.6;'>
-            <h5>🔎 Résumé</h5>
-            ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
-            🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
-            🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
-            🔌 <b>Charge PV :</b> {ev_charge_pv} kWh<br>
-            ⚡ <b>Charge Réseau :</b> {ev_charge_grid} kWh<br>
-            🔻 <b>Décharge :</b> {round(energy_discharged_kWh, 2)} kWh<br>
-            💰 <b>Économies :</b> {abs(savings)} €
-            </div>
-            """, unsafe_allow_html=True
-        )
 
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
