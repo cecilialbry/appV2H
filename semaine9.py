@@ -404,7 +404,8 @@ def simulateur_v2h_interface(side_id):
         peak_power_kwp=peak_power_kwp
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, key=f"plot_{side_id}")
+
     st.markdown(summary)
 
 # === Interface Streamlit ===
