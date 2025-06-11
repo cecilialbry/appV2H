@@ -426,7 +426,7 @@ try:
         peak_power_kwp=peak_power_kwp
     )
 
-        col_left, col_right = st.columns([2, 1])
+    col_left, col_right = st.columns([2, 1])
     with col_left:
         st.plotly_chart(fig, use_container_width=True, height=300)
     with col_right:
