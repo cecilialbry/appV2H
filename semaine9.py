@@ -380,37 +380,101 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
 st.title("Simulateur V2H - Test")
 
-try:
-    country = st.selectbox("City", list(pv_data_by_country.keys()))
-    month = st.selectbox("Month", list(pv_data_by_country[country].keys()))
-    profile_name = st.selectbox("User profile", list(user_profiles.keys()))
-    mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
-    vehicle_type = st.selectbox("Vehicle Type", list(vehicle_options.keys()))
-    arrival_hour = st.slider("Arrival time", 0, 23, 8)
-    departure_hour = st.slider("Departure time ", 0, 23, 19)
-    initial_soc = st.slider("Initial SOC", 0.2, 0.8, 0.4, 0.05)
-    target_soc = st.slider("Trget SOC", 0.3, 1.0, 0.8, 0.05)
-    num_vehicles = st.slider("Number of vehicle", 1, 10, 1)
-    peak_power_kwp = st.slider("Peak power (kWp)", 0.5, 20.0, 1.0, 0.5)
+# Deux colonnes principales
+col1, col2 = st.columns(2)
 
-    fig, summary = run_simulation(
-        country=country,
-        month=month,
-        profile_name=profile_name,
-        arrival_hour=arrival_hour,
-        departure_hour=departure_hour,
-        initial_soc=initial_soc,
-        target_soc=target_soc,
-        num_vehicles=num_vehicles,
-        mode=mode,
-        vehicle_type=vehicle_type,
-        peak_power_kwp=peak_power_kwp
-    )
+# ===== SCÉNARIO A =====
+with col1:
+    st.subheader("🔹 Scénario A")
 
-    st.plotly_chart(fig)
-    st.markdown(summary)
+    # Widgets avec clés classiques
+    month_a = st.selectbox("Mois", list(range(1, 13)), key="month_a")
+    country_a = st.selectbox("Ville", list(pv_data_by_country.keys()), key="country_a")
+    arrival_hour_a = st.slider("Heure d’arrivée", 0, 23, key="arrival_a")
+    departure_hour_a = st.slider("Heure de départ", 0, 23, key="departure_a")
+    initial_soc_a = st.slider("SoC à l’arrivée (%)", 0, 100, key="soc_init_a")
+    target_soc_a = st.slider("SoC cible au départ (%)", 0, 100, key="soc_target_a")
 
-except Exception as e:
-    st.error(f"Erreur lors de la simulation : {e}")
+    try:
+        results_a = run_simulation(
+            country=country_a,
+            month=month_a,
+            profile_name=profile_name,
+            arrival_hour=arrival_hour_a,
+            departure_hour=departure_hour_a,
+            initial_soc=initial_soc_a,
+            target_soc=target_soc_a,
+            num_vehicles=num_vehicles,
+            mode=mode,
+            vehicle_type=vehicle_type,
+            peak_power_kwp=peak_power_kwp
+        )
 
+        fig_a = results_a[0]
+        (total_pv_connected, total_ev, ev_pct, total_pv, pv_pct,
+         self_suff_pct, ev_charge_pv, ev_charge_grid,
+         energy_discharged_kWh, savings) = results_a[1:]
 
+        st.plotly_chart(fig_a, use_container_width=True, height=300)
+        st.markdown(f"""
+        <div style='font-size:0.9em; line-height:1.6'>
+        ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
+        🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
+        🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
+        🔌 <b>Charge PV :</b> {ev_charge_pv} kWh<br>
+        ⚡ <b>Charge Réseau :</b> {ev_charge_grid} kWh<br>
+        🔻 <b>Décharge :</b> {round(energy_discharged_kWh, 2)} kWh<br>
+        💰 <b>Économies :</b> {abs(savings)} €
+        </div>
+        """, unsafe_allow_html=True)
+
+    except Exception as e:
+        st.error(f"Erreur Scénario A : {e}")
+
+# ===== SCÉNARIO B =====
+with col2:
+    st.subheader("🔸 Scénario B")
+
+    # Les mêmes widgets mais avec d'autres clés
+    month_b = st.selectbox("Mois", list(range(1, 13)), key="month_b")
+    country_b = st.selectbox("Ville", list(pv_data_by_country.keys()), key="country_b")
+    arrival_hour_b = st.slider("Heure d’arrivée", 0, 23, key="arrival_b")
+    departure_hour_b = st.slider("Heure de départ", 0, 23, key="departure_b")
+    initial_soc_b = st.slider("SoC à l’arrivée (%)", 0, 100, key="soc_init_b")
+    target_soc_b = st.slider("SoC cible au départ (%)", 0, 100, key="soc_target_b")
+
+    try:
+        results_b = run_simulation(
+            country=country_b,
+            month=month_b,
+            profile_name=profile_name,
+            arrival_hour=arrival_hour_b,
+            departure_hour=departure_hour_b,
+            initial_soc=initial_soc_b,
+            target_soc=target_soc_b,
+            num_vehicles=num_vehicles,
+            mode=mode,
+            vehicle_type=vehicle_type,
+            peak_power_kwp=peak_power_kwp
+        )
+
+        fig_b = results_b[0]
+        (total_pv_connected, total_ev, ev_pct, total_pv, pv_pct,
+         self_suff_pct, ev_charge_pv, ev_charge_grid,
+         energy_discharged_kWh, savings) = results_b[1:]
+
+        st.plotly_chart(fig_b, use_container_width=True, height=300)
+        st.markdown(f"""
+        <div style='font-size:0.9em; line-height:1.6'>
+        ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
+        🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
+        🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
+        🔌 <b>Charge PV :</b> {ev_charge_pv} kWh<br>
+        ⚡ <b>Charge Réseau :</b> {ev_charge_grid} kWh<br>
+        🔻 <b>Décharge :</b> {round(energy_discharged_kWh, 2)} kWh<br>
+        💰 <b>Économies :</b> {abs(savings)} €
+        </div>
+        """, unsafe_allow_html=True)
+
+    except Exception as e:
+        st.error(f"Erreur Scénario B : {e}")
