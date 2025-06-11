@@ -409,7 +409,7 @@ def simulateur_v2h_interface(side_id):
 
 # === Interface Streamlit ===
 
-st.set_page_config(page_title="Simulateur V2H Comparatif", layout="wide")
+
 st.title("Comparaison de deux scénarios V2H")
 
 col1, col2 = st.columns(2)
