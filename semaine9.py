@@ -414,7 +414,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     yaxis=dict(title='kWh', range=[0, max_y]),
     yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100]),
     width=900,
-    height=400,
+    height=500,
     margin=dict(t=40, b=40, l=40, r=40),
     legend=dict(orientation="h", yanchor="top", y=1.10, xanchor="center", x=0.5),
     template="plotly_white"
