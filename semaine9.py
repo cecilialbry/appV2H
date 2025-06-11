@@ -1,7 +1,9 @@
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
-st.set_page_config(page_title='Simulator V2H', layout='wide')
+
+st.markdown("<h3 style='margin-bottom:0.5rem;'>🔌 Simulateur énergétique V2H</h3>", unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 /* Réduit les marges en haut et en bas de la page */
