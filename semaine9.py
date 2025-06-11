@@ -476,7 +476,7 @@ reverse_logic = {
 # Comparateur intelligent
 def highlight_better(val1, val2, reverse=False):
     if val1 > val2:
-        return "✅Left" if not reverse else "Right"
+        return "Left" if not reverse else "Right"
     elif val2 > val1:
         return "Right" if not reverse else "Left"
     else:
@@ -507,8 +507,8 @@ comparison_df = pd.DataFrame(comparison_data)
 st.table(comparison_df)
 
 # Score final
-score_left = comparison_df["Best"].tolist().count("✅ Gauche")
-score_right = comparison_df["Best"].tolist().count("✅ Droite")
+score_left = comparison_df["Best"].tolist().count("Left")
+score_right = comparison_df["Best"].tolist().count("Right")
 
 if score_left > score_right:
     winner = "Left scenario is the best"
