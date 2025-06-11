@@ -390,7 +390,7 @@ def simulateur_v2h_interface(side_id):
     num_vehicles = st.slider("Number of vehicle", 1, 10, 1, key=f"num_{side_id}")
     peak_power_kwp = st.slider("Peak power (kWp)", 0.5, 20.0, 1.0, 0.5, key=f"pv_{side_id}")
 
-    fig, summary = run_simulation(
+        fig, summary, kpi = run_simulation(
         country=country,
         month=month,
         profile_name=profile_name,
@@ -404,19 +404,18 @@ def simulateur_v2h_interface(side_id):
         peak_power_kwp=peak_power_kwp
     )
 
+
     st.plotly_chart(fig, use_container_width=True, key=f"plot_{side_id}")
     st.markdown(summary)
 
     # Retourne aussi les valeurs utiles pour comparaison
-    return {
-      "summary_text": summary,
-       "fig": fig,
-        "kpi": {
-            "autonomy": self_suff_pct,
-            "ev_flex": total_ev,
-            "pv_flex": total_pv,
-            "savings": savings
-        }
+        return fig, summary, {
+        "autonomy": self_suff_pct,
+        "ev_flex": total_ev,
+        "pv_flex": total_pv,
+        "savings": savings
+    }
+
     }
 
 
