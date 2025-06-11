@@ -511,10 +511,10 @@ score_left = comparison_df["Best"].tolist().count("✅ Gauche")
 score_right = comparison_df["Best"].tolist().count("✅ Droite")
 
 if score_left > score_right:
-    gagnant = "Left scenario is the best"
+    winner = "Left scenario is the best"
 elif score_right > score_left:
-    gagnant = "Right scenario is the best"
+    winner = "Right scenario is the best"
 else:
-    gagnant = "Both scenario are equivalent"
+    winner = "Both scenario are equivalent"
 
 st.markdown(f"### {winner}")
