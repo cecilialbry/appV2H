@@ -473,7 +473,9 @@ with row2[4]:
     peak_power_kwp = st.slider("PV (kWp)", 0.5, 20.0, 1.0, 0.5)
 
 
-# === Simulation + afficha
+
+except Exception as e:
+    st.error(f"Erreur lors de la simulation : {e}")
 try:
     results = run_simulation(
         country=country,
@@ -486,32 +488,34 @@ try:
         num_vehicles=num_vehicles,
         mode=mode,
         vehicle_type=vehicle_type,
-        peak_power_kwp=peak_power_kwp
-    )
-
+        peak_power_kwp=peak_power_kwp)
     fig = results[0]
     (total_pv_connected, total_ev, ev_pct, total_pv, pv_pct,
      self_suff_pct, ev_charge_pv, ev_charge_grid,
      energy_discharged_kWh, savings) = results[1:]
     col_left, col_right = st.columns([3.5, 0.7], gap="small")
- with col_left:
-    st.plotly_chart(fig, use_container_width=True)
+    
+  
+    col_left, col_right = st.columns([3.5, 0.7])
 
- with col_right:
-    st.markdown(
-        f"""
-        <div style='text-align: right; font-size: 1.2em; line-height: 1.9; margin-top: 0rem;'>
-        <h4 style='margin-bottom: 0.5rem;'>🔎 Résumé</h4>
-        ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
-        🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
-        🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
-        🔌 <b>Charge PV :</b> {ev_charge_pv} kWh<br>
-        ⚡ <b>Charge Réseau :</b> {ev_charge_grid} kWh<br>
-        🔻 <b>Décharge :</b> {round(energy_discharged_kWh, 2)} kWh<br>
-        💰 <b>Économies :</b> {abs(savings)} €
-        </div>
-        """, unsafe_allow_html=True
-    )
+    with col_left:
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col_right:
+        st.markdown(
+            f"""
+            <div style='text-align: right; font-size: 1.2em; line-height: 1.9; margin-top: 0rem;'>
+            <h4 style='margin-bottom: 0.5rem;'>🔎 Résumé</h4>
+            ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
+            🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
+            🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
+            🔌 <b>Charge PV :</b> {ev_charge_pv} kWh<br>
+            ⚡ <b>Charge Réseau :</b> {ev_charge_grid} kWh<br>
+            🔻 <b>Décharge :</b> {round(energy_discharged_kWh, 2)} kWh<br>
+            💰 <b>Économies :</b> {abs(savings)} €
+            </div>
+            """, unsafe_allow_html=True
+        )
 
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
