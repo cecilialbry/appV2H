@@ -416,7 +416,7 @@ def simulateur_v2h_interface(side_id):
         "savings": savings
     }
 
-    }
+    
 
 
 # === Interface Streamlit ===
