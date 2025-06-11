@@ -470,7 +470,7 @@ try:
 
     col_left, col_right = st.columns([3.5, 0.7])
     with col_left:
-      st.plotly_chart(fig, use_container_width=True, height=250)
+      st.plotly_chart(fig, use_container_width=True, height=180)
   # graphique plus court
 
     
