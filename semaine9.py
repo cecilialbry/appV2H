@@ -2,54 +2,42 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 st.set_page_config(page_title='Simulator V2H', layout='wide')
-st.markdown(
-    """
-    <style>
-    /* Réduit la taille du texte partout */
-    html, body, [class*="css"]  {
-        font-size: 13px;
-    }
+st.markdown("""
+<style>
+/* Réduit les marges en haut et en bas de la page */
+section.main > div:first-child {
+    padding-top: 0rem;
+}
+section.main > div:last-child {
+    padding-bottom: 0rem;
+}
 
-    /* Réduit la taille des sliders */
-    .stSlider > div {
-        padding-top: 0.1rem;
-        padding-bottom: 0.1rem;
-    }
+/* Réduit la taille des widgets */
+html, body, [class*="css"] {
+    font-size: 13px;
+}
 
-    /* Réduit les marges autour des widgets */
-    .stSelectbox, .stNumberInput, .stRadio, .stSlider {
-        margin-bottom: 0.2rem;
-    }
+/* Réduit la hauteur du slider */
+.stSlider > div {
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+}
+.stSlider .rc-slider {
+    height: 8px;
+}
+.stSlider .rc-slider-handle {
+    height: 14px;
+    width: 14px;
+    margin-top: -3px;
+}
 
-    /* Réduit l'espace sous les titres */
-    h1, h2, h3, h4 {
-        margin-bottom: 0.4rem;
-    }
+/* Enlève le scroll vertical */
+[aria-label="Main content"] > div {
+    overflow-y: hidden;
+}
+</style>
+""", unsafe_allow_html=True)
 
-    /* Réduit la taille des labels */
-    label {
-        font-size: 0.85em !important;
-    }
-
-    /* Réduit l'épaisseur des sliders */
-    .stSlider .rc-slider {
-        height: 10px;
-    }
-
-    .stSlider .rc-slider-handle {
-        height: 16px;
-        width: 16px;
-        margin-top: -4px;
-    }
-
-    /* Réduit la hauteur globale des blocs Streamlit */
-    section.main > div {
-        padding-top: 0.5rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 
 pv_data_by_country = {
