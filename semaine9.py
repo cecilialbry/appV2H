@@ -359,19 +359,15 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
         
     
     
-    summary_text = f"""
-    ### Simulation Results
+    summary = f"""
+<span style='font-size:13px; line-height:1.4'>
+<b>PV :</b> {round(total_pv_connected, 1)} kWh<br>
+<b>VE :</b> {round(total_ev, 1)} kWh<br>
+<b>Autonomie :</b> {self_suff_pct:.0f}%<br>
+<b>Économies :</b> {abs(round(savings, 2))} €
+</span>
+"""
 
-    - Total PV production during connection: {round(total_pv_connected, 2)} kWh
-    - Flexibility from EV: {round(total_ev, 2)} kWh ({ev_pct} % of total demand)
-    - Flexibility from PV: {round(total_pv, 2)} kWh ({pv_pct} % of total demand)
-    - Autonomy energetic (self-sufficiency): {self_suff_pct} %
-    - Energy charged: {round(energy_charged_kWh, 2)} kWh
-      - from PV: {ev_charge_pv} kWh
-      - from Grid: {ev_charge_grid} kWh
-    - Energy discharged: {round(energy_discharged_kWh, 2)} kWh
-    - Savings: {abs(round(savings, 2))} €
-    """
 
     return fig, summary_text
 
