@@ -12,12 +12,12 @@ section.main > div:last-child {
     padding-bottom: 0rem;
 }
 
-/* Réduit la taille des widgets */
+/* Réduit la taille du texte global */
 html, body, [class*="css"] {
     font-size: 13px;
 }
 
-/* Réduit la hauteur du slider */
+/* Réduit la hauteur des sliders */
 .stSlider > div {
     padding-top: 0.1rem;
     padding-bottom: 0.1rem;
@@ -31,12 +31,30 @@ html, body, [class*="css"] {
     margin-top: -3px;
 }
 
+/* Réduit l’espace entre les blocs de contenu */
+section.main > div {
+    gap: 0.2rem;
+}
+
+/* Réduit l’espace autour des widgets */
+.css-1kyxreq {
+    margin-top: 0rem;
+    margin-bottom: 0.1rem;
+}
+
+/* Réduit la taille du titre */
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.2rem;
+}
+
 /* Enlève le scroll vertical */
 [aria-label="Main content"] > div {
     overflow-y: hidden;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 
