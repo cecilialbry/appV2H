@@ -423,7 +423,7 @@ def simulateur_v2h_interface(side_id):
 
     # Retourne aussi les valeurs utiles pour comparaison
     return {
-    "summary_text": summary,
+    "summary": summary,
      "fig": fig,
      "kpi": kpi  # ✅ on récupère tout depuis run_simulation
 }
