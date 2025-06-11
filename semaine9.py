@@ -411,7 +411,7 @@ with row2[4]:
 
 # === Simulation + affichage
 try:
-    fig, summary = run_simulation(
+    fig, total_pv_connected, total_ev, self_suff_pct, savings = run_simulation(
         country=country,
         month=month,
         profile_name=profile_name,
@@ -425,12 +425,21 @@ try:
         peak_power_kwp=peak_power_kwp
     )
 
-    col_left, col_right = st.columns([2, 1])
-    with col_left:
-        st.plotly_chart(fig, use_container_width=True, height=300)
-    with col_right:
-        st.markdown(summary)
+    summary = f"""
+    ##### Résumé
+    - ⚡ PV : **{round(total_pv_connected, 2)}** kWh  
+    - 🔋 Véhicule : **{round(total_ev, 2)}** kWh  
+    - 🏠 Autonomie : **{self_suff_pct}** %  
+    - 💰 Économies : **{abs(round(savings, 2))}** €  
+    """
 
+    col_left, col_right = st.columns([3, 1])
+
+    with col_left:
+        st.plotly_chart(fig, use_container_width=True, height=220)
+    with col_right:
+        st.markdown(f"<div style='font-size: 14px'>{summary}</div>", unsafe_allow_html=True)
 
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
+
