@@ -58,7 +58,7 @@ html, body, [class*="css"] {
 }
 </style>
 """, unsafe_allow_html=True)
-st.markdown("### 🔌 Simulateur énergétique V2H")
+st.markdown("### 🔌 V2H simulator")
 
 
 
