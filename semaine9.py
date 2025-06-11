@@ -488,7 +488,7 @@ kpi_right = result_right["kpi"]
 
 # Construction du tableau
 comparison_data = {
-    "Indicator: [],
+    "Indicator": [],
     "Left scenario ": [],
     "Right scenario ": [],
     "Best": []
