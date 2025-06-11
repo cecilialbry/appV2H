@@ -474,8 +474,6 @@ with row2[4]:
 
 
 
-except Exception as e:
-    st.error(f"Erreur lors de la simulation : {e}")
 try:
     results = run_simulation(
         country=country,
@@ -489,14 +487,13 @@ try:
         mode=mode,
         vehicle_type=vehicle_type,
         peak_power_kwp=peak_power_kwp)
+
     fig = results[0]
     (total_pv_connected, total_ev, ev_pct, total_pv, pv_pct,
      self_suff_pct, ev_charge_pv, ev_charge_grid,
      energy_discharged_kWh, savings) = results[1:]
+
     col_left, col_right = st.columns([3.5, 0.7], gap="small")
-    
-  
-    col_left, col_right = st.columns([3.5, 0.7])
 
     with col_left:
         st.plotly_chart(fig, use_container_width=True)
