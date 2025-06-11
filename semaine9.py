@@ -409,7 +409,7 @@ def simulateur_v2h_interface(side_id):
     st.markdown(summary)
 
     # Retourne aussi les valeurs utiles pour comparaison
-        return fig, summary, {
+    return fig, summary, {
         "autonomy": self_suff_pct,
         "ev_flex": total_ev,
         "pv_flex": total_pv,
