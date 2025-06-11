@@ -369,7 +369,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 """
 
 
-    return fig, summary_text
+    return fig, summary
 
 
 # === Interface Streamlit ===
