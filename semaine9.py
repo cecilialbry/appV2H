@@ -359,7 +359,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
         
     
     
-    summary = f"""
+    summary_text = f"""
     ### Simulation Results
 
     - Total PV production during connection: {round(total_pv_connected, 2)} kWh
@@ -373,37 +373,27 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     - Savings: {abs(round(savings, 2))} €
     """
 
-    return fig, summary, {
-     "energy_charged": round(energy_charged_kWh, 2),
-     "charged_from_pv": ev_charge_pv,
-     "charged_from_grid": ev_charge_grid,
-     "energy_discharged": round(energy_discharged_kWh, 2),
-     "ev_flex": round(total_ev, 2),
-     "pv_production_connected": round(total_pv_connected, 2),
-     "pv_support_house": round(total_pv, 2),
-     "self_suff_pct": round(self_suff_pct, 2),
-     "savings": round(savings, 2)
-}
+    return fig, summary_text
 
 
+# === Interface Streamlit ===
 
+st.title("Simulateur V2H - Test")
 
-def simulateur_v2h_interface(side_id):
-    st.subheader(f"Scénario {side_id.upper()}")
+try:
+    country = st.selectbox("City", list(pv_data_by_country.keys()))
+    month = st.selectbox("Month", list(pv_data_by_country[country].keys()))
+    profile_name = st.selectbox("User profile", list(user_profiles.keys()))
+    mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
+    vehicle_type = st.selectbox("Vehicle Type", list(vehicle_options.keys()))
+    arrival_hour = st.slider("Arrival time", 0, 23, 8)
+    departure_hour = st.slider("Departure time ", 0, 23, 19)
+    initial_soc = st.slider("Initial SOC", 0.2, 0.8, 0.4, 0.05)
+    target_soc = st.slider("Trget SOC", 0.3, 1.0, 0.8, 0.05)
+    num_vehicles = st.slider("Number of vehicle", 1, 10, 1)
+    peak_power_kwp = st.slider("Peak power (kWp)", 0.5, 20.0, 1.0, 0.5)
 
-    country = st.selectbox("City", list(pv_data_by_country.keys()), key=f"country_{side_id}")
-    month = st.selectbox("Month", list(pv_data_by_country[country].keys()), key=f"month_{side_id}")
-    profile_name = st.selectbox("User profile", list(user_profiles.keys()), key=f"profile_{side_id}")
-    mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"], key=f"mode_{side_id}")
-    vehicle_type = st.selectbox("Vehicle Type", list(vehicle_options.keys()), key=f"vehicle_{side_id}")
-    arrival_hour = st.slider("Arrival time", 0, 23, 8, key=f"arrival_{side_id}")
-    departure_hour = st.slider("Departure time", 0, 23, 19, key=f"departure_{side_id}")
-    initial_soc = st.slider("Initial SOC", 0.2, 0.8, 0.4, 0.05, key=f"initial_{side_id}")
-    target_soc = st.slider("Target SOC", 0.3, 1.0, 0.8, 0.05, key=f"target_{side_id}")
-    num_vehicles = st.slider("Number of vehicle", 1, 10, 1, key=f"num_{side_id}")
-    peak_power_kwp = st.slider("Peak power (kWp)", 0.5, 20.0, 1.0, 0.5, key=f"pv_{side_id}")
-
-    fig, summary, kpi = run_simulation(
+    fig, summary = run_simulation(
         country=country,
         month=month,
         profile_name=profile_name,
@@ -417,104 +407,9 @@ def simulateur_v2h_interface(side_id):
         peak_power_kwp=peak_power_kwp
     )
 
-
-    st.plotly_chart(fig, use_container_width=True, key=f"plot_{side_id}")
+    st.plotly_chart(fig)
     st.markdown(summary)
 
-    # Retourne aussi les valeurs utiles pour comparaison
-    return {
-    "summary": summary,
-     "fig": fig,
-     "kpi": kpi  # ✅ on récupère tout depuis run_simulation
-}
+except Exception as e:
+    st.error(f"Erreur lors de la simulation : {e}")
 
-
-    
-
-
-# === Interface Streamlit ===
-
-
-st.title("Comparaison de deux scénarios V2H")
-
-col1, col2 = st.columns(2)
-
-with col1:
-    result_left = simulateur_v2h_interface("left")
-
-with col2:
-    result_right = simulateur_v2h_interface("right")
-st.markdown("---")
-st.subheader("comparison of scenarios")
-
-# Noms d'affichage
-kpi_names = {
-    "energy_charged": "Energy charged (kWh)",
-    "charged_from_pv": "Charged from PV (kWh)",
-    "charged_from_grid": "Charged from grid (kWh)",
-    "energy_discharged": "Discharged (kWh)",
-    "ev_flex": "Flexibility (kWh)",
-    "pv_production_connected": "PV production during connection(KWh)",
-    "pv_support_house": "PV support to the house (kWh)",
-    "self_suff_pct": "Self-sufficiency (%)",
-    "savings": "Savings (€)"
-}
-
-# Indique si plus haut = mieux (False = moins est mieux, ex: consommation réseau)
-reverse_logic = {
-    "energy_charged": False,
-    "charged_from_pv": False,
-    "charged_from_grid": True,   # Moins de réseau, c'est mieux
-    "energy_discharged": False,
-    "ev_flex": False,
-    "pv_production_connected": False,
-    "pv_support_house": False,
-    "self_suff_pct": False,
-    "savings": False
-}
-
-# Comparateur intelligent
-def highlight_better(val1, val2, reverse=False):
-    if val1 > val2:
-        return "Left" if not reverse else "Right"
-    elif val2 > val1:
-        return "Right" if not reverse else "Left"
-    else:
-        return "Draw"
-
-# Récupération des KPIs
-kpi_left = result_left["kpi"]
-kpi_right = result_right["kpi"]
-
-# Construction du tableau
-comparison_data = {
-    "Indicator": [],
-    "Left scenario ": [],
-    "Right scenario ": [],
-    "Best": []
-}
-
-for key, label in kpi_names.items():
-    val1 = kpi_left[key]
-    val2 = kpi_right[key]
-    best = highlight_better(val1, val2, reverse=reverse_logic.get(key, False))
-    comparison_data["Indicator"].append(label)
-    comparison_data["Left scenario "].append(val1)
-    comparison_data["Right scenario "].append(val2)
-    comparison_data["Best"].append(best)
-
-comparison_df = pd.DataFrame(comparison_data)
-st.table(comparison_df)
-
-# Score final
-score_left = comparison_df["Best"].tolist().count("Left")
-score_right = comparison_df["Best"].tolist().count("Right")
-
-if score_left > score_right:
-    winner = "Left scenario is the best"
-elif score_right > score_left:
-    winner = "Right scenario is the best"
-else:
-    winner = "Both scenario are equivalent"
-
-st.markdown(f"### {winner}")
