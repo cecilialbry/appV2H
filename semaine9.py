@@ -385,7 +385,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
      "savings": round(savings, 2)
 }
 
-}
+
 
 
 def simulateur_v2h_interface(side_id):
