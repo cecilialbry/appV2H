@@ -409,8 +409,14 @@ def simulateur_v2h_interface(side_id):
 
     # Retourne aussi les valeurs utiles pour comparaison
     return {
-          "summary_text": summary,
-          "fig": fig
+      "summary_text": summary,
+       "fig": fig,
+        "kpi": {
+            "autonomy": self_suff_pct,
+            "ev_flex": total_ev,
+            "pv_flex": total_pv,
+            "savings": savings
+        }
     }
 
 
@@ -427,16 +433,51 @@ with col1:
 with col2:
     result_right = simulateur_v2h_interface("right")
 st.markdown("---")
-st.subheader("📊 Comparaison des scénarios")
+st.subheader("🧮 Comparatif automatique des deux scénarios")
 
-col1b, col2b = st.columns(2)
+def highlight_better(val1, val2, reverse=False):
+    if val1 > val2:
+        return "✅ Gauche" if not reverse else "✅ Droite"
+    elif val2 > val1:
+        return "✅ Droite" if not reverse else "✅ Gauche"
+    else:
+        return "Égalité"
 
-with col1b:
-    st.markdown("### 🔹 Résumé Scénario Gauche")
-    st.markdown(result_left["summary_text"])
+kpi_names = {
+    "autonomy": "Autonomie énergétique (%)",
+    "ev_flex": "Énergie fournie par VE (kWh)",
+    "pv_flex": "Énergie fournie par PV (kWh)",
+    "savings": "Économies (€)"
+}
 
-with col2b:
-    st.markdown("### 🔸 Résumé Scénario Droit")
-    st.markdown(result_right["summary_text"])
+reverse_logic = {
+    "autonomy": False,
+    "ev_flex": False,
+    "pv_flex": False,
+    "savings": False
+}
+
+# Construction du tableau
+comparison_data = {
+    "Indicateur": [],
+    "Scénario Gauche": [],
+    "Scénario Droit": [],
+    "Meilleur": []
+}
+
+for key, name in kpi_names.items():
+    val1 = result_left["kpi"][key]
+    val2 = result_right["kpi"][key]
+    best = highlight_better(val1, val2, reverse_logic.get(key, False))
+    comparison_data["Indicateur"].append(name)
+    comparison_data["Scénario Gauche"].append(round(val1, 2))
+    comparison_data["Scénario Droit"].append(round(val2, 2))
+    comparison_data["Meilleur"].append(best)
+
+comparison_df = pd.DataFrame(comparison_data)
+st.table(comparison_df)
+
+
+
 
 
