@@ -450,28 +450,28 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 # LIGNE 1 : sélection de contexte
 row1 = st.columns(6)
 with row1[0]:
-    country = st.selectbox("Ville", list(pv_data_by_country.keys()))
+    country = st.selectbox("City", list(pv_data_by_country.keys()))
 with row1[1]:
-    month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
+    month = st.selectbox("Month", list(pv_data_by_country[country].keys()))
 with row1[2]:
-    profile_name = st.selectbox("Profil", list(user_profiles.keys()))
+    profile_name = st.selectbox("Profile", list(user_profiles.keys()))
 with row1[3]:
     mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
 with row1[4]:
-    vehicle_type = st.selectbox("Véhicule", list(vehicle_options.keys()))
+    vehicle_type = st.selectbox("Vehicle", list(vehicle_options.keys()))
 with row1[5]:
-    num_vehicles = st.slider("Nb véhicules", 1, 10, 1)
+    num_vehicles = st.slider("Nb vehicles", 1, 10, 1)
 
 # LIGNE 2 : sliders techniques
 row2 = st.columns(5)
 with row2[0]:
-    arrival_hour = st.slider("Arrivée", 0, 23, 8)
+    arrival_hour = st.slider("Arrivavl", 0, 23, 8)
 with row2[1]:
-    departure_hour = st.slider("Départ", 0, 23, 19)
+    departure_hour = st.slider("Departure", 0, 23, 19)
 with row2[2]:
     initial_soc = st.slider("SoC init.", 0.2, 0.8, 0.4, 0.05)
 with row2[3]:
-    target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
+    target_soc = st.slider("SoC target", 0.3, 1.0, 0.8, 0.05)
 with row2[4]:
     peak_power_kwp = st.slider("PV (kWp)", 0.5, 20.0, 1.0, 0.5)
 
@@ -506,13 +506,18 @@ try:
             f"""
             <div style='text-align: right; font-size: 1.2em; line-height: 1.9; margin-top: 0rem;'>
             <h4 style='margin-bottom: 0.5rem;'>🔎 Results</h4>
-            ☀️ <b>PV production during connection(KWh) :</b> {round(total_pv_connected, 2)} kWh<br>
-            🔋 <b>Vehicle :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
-            🏡 <b>Self-sufficiency :</b> {self_suff_pct}%<br>
-            🔌 <b>charged From PV:</b> {ev_charge_pv} kWh<br>
-            ⚡ <b>charged From grid:</b> {ev_charge_grid} kWh<br>
-            🔻 <b>discharged :</b> {round(energy_discharged_kWh, 2)} kWh<br>
-            💰 <b>savings :</b> {abs(savings)} €
+             <b>Energy charged :</b> {energy_charged_kWh} kWh<br>
+             <b>charged From PV:</b> {ev_charge_pv} kWh<br>
+             <b>charged From grid:</b> {ev_charge_grid} kWh<br>
+             <b>discharged :</b> {round(energy_discharged_kWh, 2)} kWh<br>
+             <b>Flexibility :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
+             <b>PV production during connection(KWh) :</b> {round(total_pv_connected, 2)} kWh<br>
+             <b>PV support to the house :</b> {pv_support_house_kWh} kWh<br>
+             <b>Self-sufficiency :</b> {self_suff_pct}%<br>
+             <b>savings :</b> {abs(savings)} €
+             
+             
+             
             </div>
             """, unsafe_allow_html=True
         )
