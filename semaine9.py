@@ -425,23 +425,27 @@ try:
         peak_power_kwp=peak_power_kwp
     )
 
-    col_left, col_right = st.columns([2.5, 1])  # élargit le graphe, réduit les résultats
+    col_left, col_right = st.columns([2.5, 1])  # graphique plus large
 
     with col_left:
         st.plotly_chart(fig, use_container_width=True, height=700)
 
     with col_right:
-        st.markdown("### Résumé")
-        st.markdown(f"""
-        ⚡ **PV pendant connexion** : **{total_pv_connected:.2f} kWh**  
-        🔋 **Flexibilité du véhicule** : **{total_ev:.2f} kWh**  
-        ↪️ **Énergie chargée** : **{energy_charged_kWh:.2f} kWh**  
-        &nbsp;&nbsp;&nbsp;&nbsp;☀️ PV : **{ev_charge_pv:.2f} kWh**  
-        &nbsp;&nbsp;&nbsp;&nbsp;🔌 Réseau : **{ev_charge_grid:.2f} kWh**  
-        🔄 **Énergie déchargée** : **{energy_discharged_kWh:.2f} kWh**  
-        🏠 **Autonomie énergétique** : **{self_suff_pct:.2f} %**  
-        💰 **Économies** : **{savings:.2f} €**
-        """)
+        st.markdown(
+            f"""
+            <div style='text-align: right; font-size: 0.9em; line-height: 1.6;'>
+            <strong>⚡ PV :</strong> {total_pv_connected:.2f} kWh<br>
+            <strong>🔋 Véhicule :</strong> {total_ev:.2f} kWh<br>
+            <strong>↪️ Chargé :</strong> {energy_charged_kWh:.2f} kWh<br>
+            &nbsp;&nbsp;☀️ PV : {ev_charge_pv:.2f} kWh<br>
+            &nbsp;&nbsp;🔌 Réseau : {ev_charge_grid:.2f} kWh<br>
+            <strong>🔄 Déchargé :</strong> {energy_discharged_kWh:.2f} kWh<br>
+            <strong>🏠 Autonomie :</strong> {self_suff_pct:.2f} %<br>
+            <strong>💰 Économies :</strong> {savings:.2f} €
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
