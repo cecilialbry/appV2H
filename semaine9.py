@@ -1,22 +1,23 @@
 import streamlit as st
-import plotly.graph_objects as go
-import pandas as pd
+
+st.set_page_config(page_title="Simulateur énergétique V2H", layout="wide")
+
 st.markdown("""
 <style>
-/* Supprime l’espace en haut de page */
+/* Supprime le header Streamlit par défaut */
 header[data-testid="stHeader"] {
     height: 0rem;
     padding: 0rem;
     margin: 0rem;
 }
 
-/* Réduit le padding global */
+/* Réduit le padding autour du contenu principal */
 .block-container {
-    padding-top: 0.3rem;
-    padding-bottom: 0.2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
-/* Réduit les marges internes */
+/* Réduit marges haut/bas des sections principales */
 section.main > div:first-child {
     padding-top: 0rem;
 }
@@ -24,12 +25,12 @@ section.main > div:last-child {
     padding-bottom: 0rem;
 }
 
-/* Taille texte globale */
-html, body, [class*="css"] {
-    font-size: 13px;
+/* Réduit espace entre widgets */
+section.main > div {
+    gap: 0.3rem;
 }
 
-/* Sliders */
+/* Sliders plus compacts */
 .stSlider > div {
     padding-top: 0.1rem;
     padding-bottom: 0.1rem;
@@ -43,23 +44,20 @@ html, body, [class*="css"] {
     margin-top: -3px;
 }
 
-/* Évite le scroll vertical */
-[aria-label="Main content"] > div {
-    overflow-y: hidden;
-}
-
-/* Marge minimale entre titres et blocs */
+/* Réduit marges autour des titres */
 h1, h2, h3 {
     margin-top: 0.2rem !important;
     margin-bottom: 0.2rem !important;
 }
 
-/* Réduit espace entre les colonnes */
-section.main > div {
-    gap: 0.2rem;
+/* Texte général plus petit */
+html, body, [class*="css"] {
+    font-size: 13px;
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("### 🔌 Simulateur énergétique V2H")
+
 
 
 pv_data_by_country = {
@@ -440,7 +438,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
 
 # === Interface Streamlit ===
-st.markdown("<h3 style='margin-bottom:0.2rem;'>🔌 Simulateur énergétique V2H</h3>", unsafe_allow_html=True)
+
 
 
 # LIGNE 1
