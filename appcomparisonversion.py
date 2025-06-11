@@ -382,7 +382,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
      "pv_production_connected": round(total_pv_connected, 2),
      "pv_support_house": round(total_pv, 2),
      "self_suff_pct": round(self_suff_pct, 2),
-     "savings": round(savings, 2)
+     "savings": abs(round(savings, 2))
 }
 
 
