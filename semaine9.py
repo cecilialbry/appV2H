@@ -500,8 +500,8 @@ with col_left:
 with col_right:
     st.markdown(
         f"""
-        <div style='text-align: right; font-size: 1.05em; line-height: 1.7; margin-top: 0rem;'>
-        <h5 style='margin-bottom: 0.5rem;'>🔎 Résumé</h5>
+        <div style='text-align: right; font-size: 1.2em; line-height: 1.9; margin-top: 0rem;'>
+        <h4 style='margin-bottom: 0.5rem;'>🔎 Résumé</h4>
         ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
         🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
         🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
@@ -512,6 +512,7 @@ with col_right:
         </div>
         """, unsafe_allow_html=True
     )
+
 
 
 except Exception as e:
