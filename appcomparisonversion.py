@@ -435,7 +435,7 @@ def simulateur_v2h_interface(side_id):
 # === Interface Streamlit ===
 
 
-st.title("Comparaison de deux scénarios V2H")
+st.title("V2H simulator for comparison")
 
 col1, col2 = st.columns(2)
 
