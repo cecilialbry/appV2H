@@ -435,7 +435,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 """
 
 
-    return fig, total_pv_connected, total_ev, ev_pct, total_pv, pv_pct, self_suff_pct, ev_charge_pv, ev_charge_grid, energy_discharged_kWh, savings,  energy_charged_kWh, pv_support_house_kWh
+    return fig, total_pv_connected, total_ev, ev_pct, total_pv, pv_pct, self_suff_pct, ev_charge_pv, ev_charge_grid, energy_discharged_kWh, savings,  energy_charged_kWh, pv_support
 
 
 
