@@ -377,12 +377,9 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
 
 # === Interface Streamlit ===
-st.set_page_config(page_title="Simulateur V2H", layout="wide")
 st.title("🔌 Simulateur énergétique V2H")
 
-# Affichage compact : sliders sur 3 lignes
-
-# Ligne 1
+# LIGNE 1
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     country = st.selectbox("Ville", list(pv_data_by_country.keys()))
@@ -393,7 +390,7 @@ with col3:
 with col4:
     mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
 
-# Ligne 2
+# LIGNE 2
 col5, col6, col7, col8 = st.columns(4)
 with col5:
     vehicle_type = st.selectbox("Véhicule", list(vehicle_options.keys()))
@@ -404,14 +401,16 @@ with col7:
 with col8:
     num_vehicles = st.slider("Véhicules", 1, 10, 1)
 
-# Ligne 3
+# LIGNE 3
 col9, col10, col11 = st.columns(3)
 with col9:
     initial_soc = st.slider("SoC initial", 0.2, 0.8, 0.4, 0.05)
 with col10:
     target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
 with col11:
-    peak_power_kwp = st.slider("PV crête (kWp)", 0.5, 20.0, 1.0, 0.5)
+    peak_power_kwp = st.slider("Puissance crête PV (kWp)", 0.5, 20.0, 1.0, 0.5)
+
+# === Simulation + affichage
 try:
     fig, summary = run_simulation(
         country=country,
@@ -427,7 +426,7 @@ try:
         peak_power_kwp=peak_power_kwp
     )
 
-    st.plotly_chart(fig, use_container_width=True, height=500)
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown(summary)
 
 except Exception as e:
