@@ -407,20 +407,16 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     fig.update_layout(
    
     
-    xaxis_title = None,
-    yaxis=dict(title='kWh', range=[0, max_y]),
-    yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100]),
-    width=900,
-    height=500,
-    margin=dict(t=40, b=40, l=40, r=40),
-    legend=dict(orientation="h", yanchor="top", y=,ly_white"
+    fig.update_layout(
+    xaxis_title=None,  
+    yaxis_title="Énergie (kWh)",
+    margin=dict(l=10, r=10, t=30, b=20),
+    height=300
 )
 
 
 
         
-    
-    
     summary = f"""
 <span style='font-size:13px; line-height:1.4'>
 <b>PV :</b> {round(total_pv_connected, 1)} kWh<br>
