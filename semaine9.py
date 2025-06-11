@@ -411,7 +411,7 @@ with row2[4]:
 
 # === Simulation + afficha
 try:
-    fig, total_pv_connected, total_ev, self_suff_pct, savings, energy_charged_kWh, ev_charge_pv, ev_charge_grid, energy_discharged_kWh = run_simulation(
+    results = run_simulation(
         country=country,
         month=month,
         profile_name=profile_name,
@@ -425,26 +425,30 @@ try:
         peak_power_kwp=peak_power_kwp
     )
 
-    col_left, col_right = st.columns([2.5, 1])  # graphique plus large
+    fig = results[0]
+    (total_pv_connected, total_ev, ev_pct, total_pv, pv_pct,
+     self_suff_pct, ev_charge_pv, ev_charge_grid,
+     energy_discharged_kWh, savings) = results[1:]
 
+    col_left, col_right = st.columns([2.5, 1])
+    
     with col_left:
-        st.plotly_chart(fig, use_container_width=True, height=700)
-
+        st.plotly_chart(fig, use_container_width=True, height=600)
+    
     with col_right:
         st.markdown(
             f"""
             <div style='text-align: right; font-size: 0.9em; line-height: 1.6;'>
-            <strong>⚡ PV :</strong> {total_pv_connected:.2f} kWh<br>
-            <strong>🔋 Véhicule :</strong> {total_ev:.2f} kWh<br>
-            <strong>↪️ Chargé :</strong> {energy_charged_kWh:.2f} kWh<br>
-            &nbsp;&nbsp;☀️ PV : {ev_charge_pv:.2f} kWh<br>
-            &nbsp;&nbsp;🔌 Réseau : {ev_charge_grid:.2f} kWh<br>
-            <strong>🔄 Déchargé :</strong> {energy_discharged_kWh:.2f} kWh<br>
-            <strong>🏠 Autonomie :</strong> {self_suff_pct:.2f} %<br>
-            <strong>💰 Économies :</strong> {savings:.2f} €
+            <h5>🔎 Résumé</h5>
+            ☀️ <b>PV :</b> {round(total_pv_connected, 2)} kWh<br>
+            🔋 <b>Véhicule :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
+            🏡 <b>Autonomie :</b> {self_suff_pct}%<br>
+            🔌 <b>Charge PV :</b> {ev_charge_pv} kWh<br>
+            ⚡ <b>Charge Réseau :</b> {ev_charge_grid} kWh<br>
+            🔻 <b>Décharge :</b> {round(energy_discharged_kWh, 2)} kWh<br>
+            💰 <b>Économies :</b> {abs(savings)} €
             </div>
-            """,
-            unsafe_allow_html=True
+            """, unsafe_allow_html=True
         )
 
 except Exception as e:
