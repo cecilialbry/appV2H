@@ -1,66 +1,7 @@
 import streamlit as st
-import pandas as pd
 import plotly.graph_objects as go
-
-st.set_page_config(page_title="V2H simulator", layout="wide")
-
-st.markdown("""
-<style>
-/* Supprime le header Streamlit par défaut */
-header[data-testid="stHeader"] {
-    height: 0rem;
-    padding: 0rem;
-    margin: 0rem;
-}
-
-/* Réduit le padding autour du contenu principal */
-.block-container {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-}
-
-/* Réduit marges haut/bas des sections principales */
-section.main > div:first-child {
-    padding-top: 0rem;
-}
-section.main > div:last-child {
-    padding-bottom: 0rem;
-}
-
-/* Réduit espace entre widgets */
-section.main > div {
-    gap: 0.3rem;
-}
-
-/* Sliders plus compacts */
-.stSlider > div {
-    padding-top: 0.1rem;
-    padding-bottom: 0.1rem;
-}
-.stSlider .rc-slider {
-    height: 8px;
-}
-.stSlider .rc-slider-handle {
-    height: 14px;
-    width: 14px;
-    margin-top: -3px;
-}
-
-/* Réduit marges autour des titres */
-h1, h2, h3 {
-    margin-top: 0.2rem !important;
-    margin-bottom: 0.2rem !important;
-}
-
-/* Texte général plus petit */
-html, body, [class*="css"] {
-    font-size: 13px;
-}
-</style>
-""", unsafe_allow_html=True)
-st.markdown("### 🔌 V2H simulator")
-
-
+import pandas as pd
+st.set_page_config(page_title='Simulator V2H', layout='wide')
 
 pv_data_by_country = {
     "Paris": {
@@ -332,7 +273,6 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
     summary_df = pd.DataFrame({
         "hour": list(range(24)),
-    
         "house_demand": house_demand_profile,
         "pv_generation": pv_profile,
         "battery_flow": battery_flow
@@ -348,7 +288,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     pv_support = summary_df.apply(
         lambda row: min(row["house_demand"], row["pv_generation"]) if row["hour"] in connected_hours else 0,
         axis=1
-    ).sum()
+    )
     total_pv = pv_support.sum()
     pv_pct = round(100 * total_pv / summary_df["house_demand"].sum(), 2)
 
@@ -404,79 +344,56 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
     max_y = max(max(pv_profile), max(house_demand_profile), max(net_load), max(abs(x) for x in battery_flow)) * 1.2
     max_y = min(max_y, 60)
-    
-   
-    
     fig.update_layout(
-   
-    
-    xaxis=dict(title=''),
-    yaxis=dict(title='kWh', range=[0, max_y]),
-    yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100]),
-    width=900,
-    height=480,
-    margin=dict(t=40, b=40, l=40, r=40),
-    legend=dict(orientation="h", yanchor="top", y=1.10, xanchor="center", x=0.5),
+    xaxis=dict(title='Heure'),
+    yaxis=dict(title='Puissance (kW)', side='left', range=[0, max_y], tick0=0, dtick=5),
+    yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100], tick0=0, dtick=10),
+    width=1200,
+    height=700,
+    margin=dict(t=80, b=60, l=60, r=60),
+    legend=dict(orientation="h", yanchor="top", y=1.12, xanchor="center", x=0.5),
     template="plotly_white"
 )
 
 
-
-
-
         
-    summary = f"""
-<span style='font-size:13px; line-height:1.4'>
-<b>PV :</b> {round(total_pv_connected, 1)} kWh<br>
-<b>VE :</b> {round(total_ev, 1)} kWh<br>
-<b>Autonomie :</b> {self_suff_pct:.0f}%<br>
-<b>Économies :</b> {abs(round(savings, 2))} €
-</span>
-"""
+    
+    
+    summary_text = f"""
+    ### Simulation Results
 
+    - Total PV production during connection: {round(total_pv_connected, 2)} kWh
+    - Flexibility from EV: {round(total_ev, 2)} kWh ({ev_pct} % of total demand)
+    - Flexibility from PV: {round(total_pv, 2)} kWh ({pv_pct} % of total demand)
+    - Autonomy energetic (self-sufficiency): {self_suff_pct} %
+    - Energy charged: {round(energy_charged_kWh, 2)} kWh
+      - from PV: {ev_charge_pv} kWh
+      - from Grid: {ev_charge_grid} kWh
+    - Energy discharged: {round(energy_discharged_kWh, 2)} kWh
+    - Savings: {abs(round(savings, 2))} €
+    """
 
-    return fig, total_pv_connected, total_ev, ev_pct, total_pv, pv_pct, self_suff_pct, ev_charge_pv, ev_charge_grid, energy_discharged_kWh, savings,  energy_charged_kWh, pv_support
-
-
+    return fig, summary_text
 
 
 # === Interface Streamlit ===
 
-
-
-# LIGNE 1
-# LIGNE 1 : sélection de contexte
-row1 = st.columns(6)
-with row1[0]:
-    country = st.selectbox("City", list(pv_data_by_country.keys()))
-with row1[1]:
-    month = st.selectbox("Month", list(pv_data_by_country[country].keys()))
-with row1[2]:
-    profile_name = st.selectbox("Profile", list(user_profiles.keys()))
-with row1[3]:
-    mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
-with row1[4]:
-    vehicle_type = st.selectbox("Vehicle", list(vehicle_options.keys()))
-with row1[5]:
-    num_vehicles = st.slider("Nb vehicles", 1, 10, 1)
-
-# LIGNE 2 : sliders techniques
-row2 = st.columns(5)
-with row2[0]:
-    arrival_hour = st.slider("Arrivavl", 0, 23, 8)
-with row2[1]:
-    departure_hour = st.slider("Departure", 0, 23, 19)
-with row2[2]:
-    initial_soc = st.slider("SoC init.", 0.2, 0.8, 0.4, 0.05)
-with row2[3]:
-    target_soc = st.slider("SoC target", 0.3, 1.0, 0.8, 0.05)
-with row2[4]:
-    peak_power_kwp = st.slider("PV (kWp)", 0.5, 20.0, 1.0, 0.5)
-
-
+st.title("Simulateur V2H - Test")
 
 try:
-    results = run_simulation(
+    country = st.selectbox("City", list(pv_data_by_country.keys()))
+    month = st.selectbox("Month", list(pv_data_by_country[country].keys()))
+    profile_name = st.selectbox("User profile", list(user_profiles.keys()))
+    mode = st.selectbox("Mode", ["V2H", "V2G", "V2B"])
+    vehicle_type = st.selectbox("Vehicle Type", list(vehicle_options.keys()))
+    arrival_hour = st.slider("Arrival time", 0, 23, 8)
+    departure_hour = st.slider("Departure time ", 0, 23, 19)
+    initial_soc = st.slider("Initial SOC", 0.2, 0.8, 0.4, 0.05)
+    target_soc = st.slider("Trget SOC", 0.3, 1.0, 0.8, 0.05)
+    num_vehicles = st.slider("Number of vehicle", 1, 10, 1)
+    peak_power_kwp = st.slider("Peak power (kWp)", 0.5, 20.0, 1.0, 0.5)
+
+    fig, summary = run_simulation(
         country=country,
         month=month,
         profile_name=profile_name,
@@ -487,40 +404,13 @@ try:
         num_vehicles=num_vehicles,
         mode=mode,
         vehicle_type=vehicle_type,
-        peak_power_kwp=peak_power_kwp)
+        peak_power_kwp=peak_power_kwp
+    )
 
-    fig = results[0]
-    (total_pv_connected, total_ev, ev_pct, total_pv, pv_pct,
-    self_suff_pct, ev_charge_pv, ev_charge_grid,
-    energy_discharged_kWh, savings,
-    energy_charged_kWh, pv_support) = results[1:]
-
-
-    col_left, col_right = st.columns([3.5, 0.7], gap="small")
-
-    with col_left:
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col_right:
-        st.markdown(
-            f"""
-            <div style='text-align: right; font-size: 1.2em; line-height: 1.9; margin-top: 0rem;'>
-            <h4 style='margin-bottom: 0.5rem;'> Results</h4>
-             <b>Energy charged :</b> {energy_charged_kWh} kWh<br>
-             <b>charged From PV:</b> {ev_charge_pv} kWh<br>
-             <b>charged From grid:</b> {ev_charge_grid} kWh<br>
-             <b>discharged :</b> {round(energy_discharged_kWh, 2)} kWh<br>
-             <b>Flexibility :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
-             <b>PV production during connection(KWh) :</b> {round(total_pv_connected, 2)} kWh<br>
-             <b>PV support to the house :</b> {pv_support} kWh<br>
-             <b>Self-sufficiency :</b> {self_suff_pct}%<br>
-             <b>savings :</b> {abs(savings)} €
-             
-             
-             
-            </div>
-            """, unsafe_allow_html=True
-        )
+    st.plotly_chart(fig)
+    st.markdown(summary)
 
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
+
+
