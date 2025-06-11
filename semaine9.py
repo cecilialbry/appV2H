@@ -404,15 +404,14 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
     max_y = max(max(pv_profile), max(house_demand_profile), max(net_load), max(abs(x) for x in battery_flow)) * 1.2
     max_y = min(max_y, 60)
-    fig.update_layout(
+    
    
     
     fig.update_layout(
     xaxis_title=None,  
     yaxis_title="Énergie (kWh)",
     margin=dict(l=10, r=10, t=30, b=20),
-    height=300
-)
+    height=300)
 
 
 
