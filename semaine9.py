@@ -373,11 +373,18 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     - Savings: {abs(round(savings, 2))} €
     """
 
-    return fig, summary, {
-     "autonomy": self_suff_pct,
-     "ev_flex": total_ev,
-     "pv_flex": total_pv,
-     "savings": savings
+    return fig, summary_text, {
+     "energy_charged": round(energy_charged_kWh, 2),
+     "charged_from_pv": ev_charge_pv,
+     "charged_from_grid": ev_charge_grid,
+     "energy_discharged": round(energy_discharged_kWh, 2),
+     "ev_flex": round(total_ev, 2),
+     "pv_production_connected": round(total_pv_connected, 2),
+     "pv_support_house": round(total_pv, 2),
+     "self_suff_pct": round(self_suff_pct, 2),
+     "savings": round(savings, 2)
+}
+
 }
 
 
@@ -438,8 +445,35 @@ with col1:
 with col2:
     result_right = simulateur_v2h_interface("right")
 st.markdown("---")
-st.subheader("🧮 Comparatif automatique des deux scénarios")
+st.subheader("📊 Comparaison complète des scénarios")
 
+# Noms d'affichage
+kpi_names = {
+    "energy_charged": "Énergie chargée (kWh)",
+    "charged_from_pv": "Chargée depuis PV (kWh)",
+    "charged_from_grid": "Chargée depuis réseau (kWh)",
+    "energy_discharged": "Énergie déchargée (kWh)",
+    "ev_flex": "Flexibilité VE (kWh)",
+    "pv_production_connected": "PV pendant la connexion (kWh)",
+    "pv_support_house": "Soutien PV à la maison (kWh)",
+    "self_suff_pct": "Autonomie énergétique (%)",
+    "savings": "Économies (€)"
+}
+
+# Indique si plus haut = mieux (False = moins est mieux, ex: consommation réseau)
+reverse_logic = {
+    "energy_charged": False,
+    "charged_from_pv": False,
+    "charged_from_grid": True,   # Moins de réseau, c'est mieux
+    "energy_discharged": False,
+    "ev_flex": False,
+    "pv_production_connected": False,
+    "pv_support_house": False,
+    "self_suff_pct": False,
+    "savings": False
+}
+
+# Comparateur intelligent
 def highlight_better(val1, val2, reverse=False):
     if val1 > val2:
         return "✅ Gauche" if not reverse else "✅ Droite"
@@ -448,19 +482,9 @@ def highlight_better(val1, val2, reverse=False):
     else:
         return "Égalité"
 
-kpi_names = {
-    "autonomy": "Autonomie énergétique (%)",
-    "ev_flex": "Énergie fournie par VE (kWh)",
-    "pv_flex": "Énergie fournie par PV (kWh)",
-    "savings": "Économies (€)"
-}
-
-reverse_logic = {
-    "autonomy": False,
-    "ev_flex": False,
-    "pv_flex": False,
-    "savings": False
-}
+# Récupération des KPIs
+kpi_left = result_left["kpi"]
+kpi_right = result_right["kpi"]
 
 # Construction du tableau
 comparison_data = {
@@ -470,19 +494,27 @@ comparison_data = {
     "Meilleur": []
 }
 
-for key, name in kpi_names.items():
-    val1 = result_left["kpi"][key]
-    val2 = result_right["kpi"][key]
-    best = highlight_better(val1, val2, reverse_logic.get(key, False))
-    comparison_data["Indicateur"].append(name)
-    comparison_data["Scénario Gauche"].append(round(val1, 2))
-    comparison_data["Scénario Droit"].append(round(val2, 2))
+for key, label in kpi_names.items():
+    val1 = kpi_left[key]
+    val2 = kpi_right[key]
+    best = highlight_better(val1, val2, reverse=reverse_logic.get(key, False))
+    comparison_data["Indicateur"].append(label)
+    comparison_data["Scénario Gauche"].append(val1)
+    comparison_data["Scénario Droit"].append(val2)
     comparison_data["Meilleur"].append(best)
 
 comparison_df = pd.DataFrame(comparison_data)
 st.table(comparison_df)
 
+# Score final
+score_left = comparison_df["Meilleur"].tolist().count("✅ Gauche")
+score_right = comparison_df["Meilleur"].tolist().count("✅ Droite")
 
+if score_left > score_right:
+    gagnant = "🏆 Le scénario gauche est globalement le meilleur."
+elif score_right > score_left:
+    gagnant = "🏆 Le scénario droit est globalement le meilleur."
+else:
+    gagnant = "⚖️ Les deux scénarios sont équivalents."
 
-
-
+st.markdown(f"### {gagnant}")
