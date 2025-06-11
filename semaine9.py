@@ -369,7 +369,8 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 """
 
 
-    return fig, summary
+    return fig, total_pv_connected, total_ev, self_suff_pct, savings  # ✅ nouveau
+
 
 
 # === Interface Streamlit ===
