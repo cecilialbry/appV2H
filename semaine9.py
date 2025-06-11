@@ -373,7 +373,13 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     - Savings: {abs(round(savings, 2))} €
     """
 
-    return fig, summary_text
+    return fig, summary, {
+     "autonomy": self_suff_pct,
+     "ev_flex": total_ev,
+     "pv_flex": total_pv,
+     "savings": savings
+}
+
 
 def simulateur_v2h_interface(side_id):
     st.subheader(f"Scénario {side_id.upper()}")
