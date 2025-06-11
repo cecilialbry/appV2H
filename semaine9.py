@@ -383,7 +383,7 @@ st.caption("Simulation heure par heure de l’interaction entre véhicule, maiso
 
 
 try:
-    with st.expander("🔧 Paramètres de simulation", expanded=True):
+   with st.expander("🔧 Paramètres de simulation", expanded=True):
     country = st.selectbox("Ville", list(pv_data_by_country.keys()))
     month = st.selectbox("Mois", list(pv_data_by_country[country].keys()))
     profile_name = st.selectbox("Profil utilisateur", list(user_profiles.keys()))
@@ -405,6 +405,7 @@ try:
         target_soc = st.slider("SoC cible", 0.3, 1.0, 0.8, 0.05)
     with col6:
         peak_power_kwp = st.slider("Puissance crête PV (kWp)", 0.5, 20.0, 1.0, 0.5)
+
 
 
     fig, summary = run_simulation(
