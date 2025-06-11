@@ -394,8 +394,6 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     template="plotly_white"
 )
 
-)
-
 
         
     
