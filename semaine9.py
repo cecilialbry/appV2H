@@ -426,8 +426,12 @@ try:
         peak_power_kwp=peak_power_kwp
     )
 
-    st.plotly_chart(fig, use_container_width=True)
-    st.markdown(summary)
+        col_left, col_right = st.columns([2, 1])
+    with col_left:
+        st.plotly_chart(fig, use_container_width=True, height=300)
+    with col_right:
+        st.markdown(summary)
+
 
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
