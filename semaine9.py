@@ -359,7 +359,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
         
     
     
-    summary_text = f"""
+    summary = f"""
     ### Simulation Results
 
     - Total PV production during connection: {round(total_pv_connected, 2)} kWh
