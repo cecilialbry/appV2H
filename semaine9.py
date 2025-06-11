@@ -494,10 +494,10 @@ try:
      self_suff_pct, ev_charge_pv, ev_charge_grid,
      energy_discharged_kWh, savings) = results[1:]
     col_left, col_right = st.columns([3.5, 0.7], gap="small")
-with col_left:
+ with col_left:
     st.plotly_chart(fig, use_container_width=True)
 
-with col_right:
+ with col_right:
     st.markdown(
         f"""
         <div style='text-align: right; font-size: 1.2em; line-height: 1.9; margin-top: 0rem;'>
@@ -512,8 +512,6 @@ with col_right:
         </div>
         """, unsafe_allow_html=True
     )
-
-
 
 except Exception as e:
     st.error(f"Erreur lors de la simulation : {e}")
