@@ -348,7 +348,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     pv_support = summary_df.apply(
         lambda row: min(row["house_demand"], row["pv_generation"]) if row["hour"] in connected_hours else 0,
         axis=1
-    )
+    ).sum()
     total_pv = pv_support.sum()
     pv_pct = round(100 * total_pv / summary_df["house_demand"].sum(), 2)
 
@@ -505,7 +505,7 @@ try:
         st.markdown(
             f"""
             <div style='text-align: right; font-size: 1.2em; line-height: 1.9; margin-top: 0rem;'>
-            <h4 style='margin-bottom: 0.5rem;'>🔎 Results</h4>
+            <h4 style='margin-bottom: 0.5rem;'> Results</h4>
              <b>Energy charged :</b> {energy_charged_kWh} kWh<br>
              <b>charged From PV:</b> {ev_charge_pv} kWh<br>
              <b>charged From grid:</b> {ev_charge_grid} kWh<br>
