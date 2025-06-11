@@ -55,7 +55,13 @@ h1 {
     overflow-y: hidden;
 }
 </style>
-""", unsafe_allow_html=True)
+""", unsafe_allow_html=True
+/* Réduction espace autour des titres */
+h1, h2, h3 {
+    margin-top: 0.2rem !important;
+    margin-bottom: 0.2rem !important;
+}
+
 
 
 
