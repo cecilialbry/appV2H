@@ -437,7 +437,6 @@ with col_left:
 
 # === Simulation + afficha
 try:
-    try:
         fig, summary = run_simulation(
             country, month, profile_name,
             arrival_hour, departure_hour,
@@ -452,5 +451,5 @@ try:
         with col_right:
             st.markdown(summary)
 
-    except Exception as e:
+except Exception as e:
         st.error(f"Erreur : {e}")
