@@ -6,6 +6,7 @@ This repository contains the **Streamlit application** for the V2H (Vehicle-to-H
 - First version: https://appv2h-juezzmflsjsuvucgecthpd.streamlit.app/  
 - Optimized version: https://appv2h-bwyfw87l7f2hkcui2o9ru4.streamlit.app/  
 - Comparison version: https://appv2h-7jqrlvgtjyd6h7wkjzka6x.streamlit.app/
+- dropbox paper : https://paper.dropbox.com/doc/Erasmus-Work-plan-for-Cecilia-2025--CoeQu16DDLFZZb8rRVPYdHU1Ag-ne8HBrNTSoXsAu0wKfxL0
 
 ## 🎯 Purpose
 
