@@ -1,33 +1,34 @@
-# appV2H – Application Streamlit
+# appV2H – Streamlit Application
 
-Ce dépôt contient l’**application Streamlit** du simulateur énergétique V2H (*Vehicle-to-Home*), développée dans le cadre d’un stage au laboratoire LUCAMI – Université de Ljubljana.
+This repository contains the **Streamlit application** for the V2H (Vehicle-to-Home) energy simulator, developed as part of an internship at the LUCAMI Laboratory – University of Ljubljana.
 
-lien vers 1er version de l'app : https://appv2h-juezzmflsjsuvucgecthpd.streamlit.app/
-lien vers version optimisée : https://appv2h-bwyfw87l7f2hkcui2o9ru4.streamlit.app/
-lien version comparaison : https://appv2h-7jqrlvgtjyd6h7wkjzka6x.streamlit.app/
+🔗 **App Links**  
+- First version: https://appv2h-juezzmflsjsuvucgecthpd.streamlit.app/  
+- Optimized version: https://appv2h-bwyfw87l7f2hkcui2o9ru4.streamlit.app/  
+- Comparison version: https://appv2h-7jqrlvgtjyd6h7wkjzka6x.streamlit.app/
 
-## 🎯 Objectif
+## 🎯 Purpose
 
-Proposer une interface simple et interactive pour simuler les échanges d’énergie entre :
-- un véhicule électrique (VE),
-- une maison (consommation horaire),
-- une production solaire (PV),
-- et le réseau électrique.
+This application offers a simple and interactive interface to simulate energy exchanges between:
+- an electric vehicle (EV),
+- a house (hourly consumption),
+- solar power production (PV),
+- and the electrical grid.
 
-L’utilisateur peut choisir :
-- son profil de consommation,
-- la période de simulation (mois),
-- les caractéristiques du VE,
-- et visualiser les résultats sous forme de graphiques et tableaux.
+The user can choose:
+- their consumption profile,
+- the simulation period (month),
+- the EV characteristics,
+- and view the results through plots and tables.
 
-## 🗂️ Organisation du projet
+## 🗂️ Project Structure
+
 appV2H/
-├── app/ # Fichiers Streamlit (.py)
-├── data/ # Données : profils utilisateurs, PV, tarifs
-├── assets/ # Images, logos pour l’interface
-├── .streamlit/ # Fichiers de configuration Streamlit (layout, thème)
-├── requirements.txt # Librairies Python nécessaires
-├── CHANGELOG.md # Suivi des versions de l'app
+├── app/ # Streamlit Python files
+├── data/ # Data: user profiles, PV production, tariffs
+├── assets/ # Images, logos for the interface
+├── .streamlit/ # Streamlit configuration files (layout, theme)
+├── requirements.txt # Required Python libraries
+├── CHANGELOG.md # App version history
 └── README.md
-
 
