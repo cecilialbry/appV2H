@@ -358,7 +358,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     })
 
     ev_support = summary_df.apply(
-        lambda row: min(max(row["house_demand"] - row["pv_generation"], 0), -row["battery_flow"]) if row["battery_flow"] < 0 else 0,
+        lambda row: min(max(row["house_demand"] - row["pv_generation"], 0), -row["battery_flow"]) 
         axis=1
     )
     total_ev = ev_support.sum()
