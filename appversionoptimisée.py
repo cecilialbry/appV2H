@@ -429,7 +429,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     fig.update_layout(
    
     
-    xaxis=dict(title=''),
+    xaxis=dict(title='h'),
     yaxis=dict(title='kW', range=[0, max_y]),
     yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100]),
     width=900,
