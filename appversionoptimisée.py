@@ -362,7 +362,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     axis=1
 )
 
-    )
+    
     total_ev = ev_support.sum()
     ev_pct = round(100 * total_ev / summary_df["house_demand"].sum(), 2)
 
