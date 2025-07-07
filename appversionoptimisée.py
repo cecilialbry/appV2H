@@ -379,7 +379,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
     energy_charged_kWh = summary_df[summary_df["battery_flow"] > 0]["battery_flow"].sum()
     ev_charge_pv = summary_df.apply(
-        lambda row: min(row["pv_generation"], row["battery_flow"]) if row["battery_flow"] > 0 else 0,
+        lambda row: min(row["pv_generation"], row["battery_flow"]) if row["battery_flow"] < 0 else 0,
         axis=1
     ).sum()
     ev_charge_grid = energy_charged_kWh - ev_charge_pv
@@ -535,7 +535,7 @@ try:
              <b>charged From grid:</b> {ev_charge_grid} kWh<br>
             
              <b>discharged :</b> {round(energy_discharged_kWh, 2)} kWh<br>
-             <b>Flexibility :</b> {abs(round(total_ev, 2))} kWh (abs({ev_pct}))%)<br>
+             <b>Flexibility :</b> {abs(round(total_ev, 2))} kWh ({ev_pct})%)<br>
              <b>PV production during connection(KWh) :</b> {round(total_pv_connected, 2)} kWh<br>
              <b>PV support to the house :</b> {pv_support} kWh<br>
              <b>Self-sufficiency :</b> {self_suff_pct}%<br>
