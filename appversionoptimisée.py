@@ -2,6 +2,24 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import streamlit as st
+
+st.set_page_config(layout="wide")  # Affiche l'app en pleine largeur
+
+# Supprime le menu Streamlit, l'en-tête et le pied de page
+st.markdown("""
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    .block-container {
+        padding-top: 0rem;
+        padding-bottom: 0rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 st.set_page_config(page_title="V2H simulator", layout="wide")
 
