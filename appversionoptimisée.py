@@ -533,8 +533,9 @@ try:
              <b>Energy charged :</b> {energy_charged_kWh} kWh<br>
              <b>charged From PV:</b> {ev_charge_pv} kWh<br>
              <b>charged From grid:</b> {ev_charge_grid} kWh<br>
+            
              <b>discharged :</b> {round(energy_discharged_kWh, 2)} kWh<br>
-             <b>Flexibility :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
+             <b>Flexibility :</b> {abs(round(total_ev, 2)} kWh ({ev_pct})%)<br>
              <b>PV production during connection(KWh) :</b> {round(total_pv_connected, 2)} kWh<br>
              <b>PV support to the house :</b> {pv_support} kWh<br>
              <b>Self-sufficiency :</b> {self_suff_pct}%<br>
