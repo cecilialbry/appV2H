@@ -1,13 +1,23 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-import streamlit as st
 
+st.set_page_config(page_title="V2H simulator", layout="wide")
 
+st.markdown("""
 <style>
+/* Supprime le header Streamlit par défaut */
+header[data-testid="stHeader"] {
+    height: 0rem;
+    padding: 0rem;
+    margin: 0rem;
+}
 
-
+/* Réduit le padding autour du contenu principal */
+.block-container {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
 
 /* Réduit marges haut/bas des sections principales */
 section.main > div:first-child {
@@ -329,11 +339,9 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     })
 
     ev_support = summary_df.apply(
-    lambda row: max(0, min(max(row["house_demand"] - row["pv_generation"], 0), -row["battery_flow"])) if row["battery_flow"] < 0 else 0,
-    axis=1
-)
-
-    
+        lambda row: min(max(row["house_demand"] - row["pv_generation"], 0), -row["battery_flow"]) if row["battery_flow"] < 0 else 0,
+        axis=1
+    )
     total_ev = ev_support.sum()
     ev_pct = round(100 * total_ev / summary_df["house_demand"].sum(), 2)
 
@@ -352,7 +360,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
 
     energy_charged_kWh = summary_df[summary_df["battery_flow"] > 0]["battery_flow"].sum()
     ev_charge_pv = summary_df.apply(
-        lambda row: min(row["pv_generation"], row["battery_flow"]) if row["battery_flow"] < 0 else 0,
+        lambda row: min(row["pv_generation"], row["battery_flow"]) if row["battery_flow"] > 0 else 0,
         axis=1
     ).sum()
     ev_charge_grid = energy_charged_kWh - ev_charge_pv
@@ -402,13 +410,8 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
     fig.update_layout(
    
     
-    xaxis=dict(title='h'),
-    yaxis=dict(
-    title='kW',
-    range=[min(min(pv_profile), min(house_demand_profile), min(net_load), min(battery_flow)) * 1.2,
-           max(max(pv_profile), max(house_demand_profile), max(net_load), max(battery_flow)) * 1.2]
-),
-
+    xaxis=dict(title=''),
+    yaxis=dict(title='kWh', range=[0, max_y]),
     yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100]),
     width=900,
     height=480,
@@ -424,7 +427,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
         
     summary = f"""
 <span style='font-size:13px; line-height:1.4'>
-<b>PV :</b> {abs(round(total_pv_connected, 1))} kWh<br>
+<b>PV :</b> {round(total_pv_connected, 1)} kWh<br>
 <b>VE :</b> {round(total_ev, 1)} kWh<br>
 <b>Autonomie :</b> {self_suff_pct:.0f}%<br>
 <b>Économies :</b> {abs(round(savings, 2))} €
@@ -460,7 +463,7 @@ with row1[5]:
 # LIGNE 2 : sliders techniques
 row2 = st.columns(5)
 with row2[0]:
-    arrival_hour = st.slider("Arrival", 0, 23, 8)
+    arrival_hour = st.slider("Arrivavl", 0, 23, 8)
 with row2[1]:
     departure_hour = st.slider("Departure", 0, 23, 19)
 with row2[2]:
@@ -506,10 +509,8 @@ try:
              <b>Energy charged :</b> {energy_charged_kWh} kWh<br>
              <b>charged From PV:</b> {ev_charge_pv} kWh<br>
              <b>charged From grid:</b> {ev_charge_grid} kWh<br>
-            
              <b>discharged :</b> {round(energy_discharged_kWh, 2)} kWh<br>
              <b>Flexibility :</b> {round(total_ev, 2)} kWh ({ev_pct}%)<br>
-
              <b>PV production during connection(KWh) :</b> {round(total_pv_connected, 2)} kWh<br>
              <b>PV support to the house :</b> {pv_support} kWh<br>
              <b>Self-sufficiency :</b> {self_suff_pct}%<br>
