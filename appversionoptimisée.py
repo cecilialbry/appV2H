@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-st.set_page_config(layout="wide")  # Affiche l'app en pleine largeur
+
 
 # Supprime le menu Streamlit, l'en-tête et le pied de page
 st.markdown("""
@@ -25,18 +25,8 @@ st.set_page_config(page_title="V2H simulator", layout="wide")
 
 st.markdown("""
 <style>
-/* Supprime le header Streamlit par défaut */
-header[data-testid="stHeader"] {
-    height: 0rem;
-    padding: 0rem;
-    margin: 0rem;
-}
 
-/* Réduit le padding autour du contenu principal */
-.block-container {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-}
+
 
 /* Réduit marges haut/bas des sections principales */
 section.main > div:first-child {
