@@ -424,7 +424,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
         
     summary = f"""
 <span style='font-size:13px; line-height:1.4'>
-<b>PV :</b> {round(total_pv_connected, 1)} kWh<br>
+<b>PV :</b> {abs(round(total_pv_connected, 1))} kWh<br>
 <b>VE :</b> {round(total_ev, 1)} kWh<br>
 <b>Autonomie :</b> {self_suff_pct:.0f}%<br>
 <b>Économies :</b> {abs(round(savings, 2))} €
