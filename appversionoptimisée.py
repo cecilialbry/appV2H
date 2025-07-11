@@ -322,7 +322,8 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
         current_soc = max(min(current_soc, battery_capacity_kWh), min_soc_ratio * battery_capacity_kWh)
         soc_kWh[h] = current_soc
         battery_flow[h] = round(battery_effect_total, 2)
-        net_load[h] = round(max(demand - pv + battery_effect_total, 0), 2)
+        net_load[h] = round(demand - pv + battery_effect_total, 2)
+
 
     if soc_kWh[departure_hour] is None:
         soc_kWh[departure_hour] = current_soc
@@ -411,7 +412,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
    
     
     xaxis=dict(title=''),
-    yaxis=dict(title='kW', range=[0, max_y]),
+    yaxis=dict(title='kW'),
     yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100]),
     width=900,
     height=480,
