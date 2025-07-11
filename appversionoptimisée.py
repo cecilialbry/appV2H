@@ -411,7 +411,7 @@ def run_simulation(country, month, profile_name, arrival_hour, departure_hour,
    
     
     xaxis=dict(title=''),
-    yaxis=dict(title='kWh', range=[0, max_y]),
+    yaxis=dict(title='kW', range=[0, max_y]),
     yaxis2=dict(title='SoC (%)', overlaying='y', side='right', range=[0, 100]),
     width=900,
     height=480,
@@ -463,7 +463,7 @@ with row1[5]:
 # LIGNE 2 : sliders techniques
 row2 = st.columns(5)
 with row2[0]:
-    arrival_hour = st.slider("Arrivavl", 0, 23, 8)
+    arrival_hour = st.slider("Arrival", 0, 23, 8)
 with row2[1]:
     departure_hour = st.slider("Departure", 0, 23, 19)
 with row2[2]:
